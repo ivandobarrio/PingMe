@@ -6,7 +6,16 @@
     <groupId>com.proyecto</groupId>
     <artifactId>PingMe</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+	
+	
+	<repositories>
+	    <repository>
+	        <id>jaspersoft-repo</id>
+	        <url>https://jaspersoft.jfrog.io/artifactory/oss-releases</url>
+	    </repository>
+	</repositories>
 
+	
     <dependencies>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -37,5 +46,28 @@
             <artifactId>javafx-fxml</artifactId>
             <version>21.0.1</version>
         </dependency>
+        
+        
+<!-- JasperReports Core -->
+<dependency>
+    <groupId>net.sf.jasperreports</groupId>
+    <artifactId>jasperreports</artifactId>
+    <version>7.0.3</version>
+</dependency>
+
+<!-- Exportar a PDF -->
+<dependency>
+    <groupId>net.sf.jasperreports</groupId>
+    <artifactId>jasperreports-pdf</artifactId>
+    <version>7.0.3</version>
+</dependency>
+
+<!-- Temas para gráficos -->
+<dependency>
+    <groupId>net.sf.jasperreports</groupId>
+    <artifactId>jasperreports-chart-themes</artifactId>
+    <version>7.0.3</version>
+</dependency>
+
     </dependencies>
 </project>
