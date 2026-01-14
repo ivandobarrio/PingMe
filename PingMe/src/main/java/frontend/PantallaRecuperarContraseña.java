@@ -1,4 +1,4 @@
-package Frontend_JavaFX_UI_Controladores;
+package frontend;
 
 public class PantallaRecuperarContraseña {
 
