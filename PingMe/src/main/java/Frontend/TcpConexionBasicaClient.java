@@ -1,4 +1,4 @@
-package Frontend;
+package frontend;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

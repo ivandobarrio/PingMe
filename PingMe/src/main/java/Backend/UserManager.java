@@ -1,4 +1,4 @@
-package Backend;
+package backend;
 
 import entidades.ServerPeticion;
 import entidades.ServerRespuesta;
