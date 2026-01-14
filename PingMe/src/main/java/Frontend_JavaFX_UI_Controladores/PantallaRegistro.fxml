@@ -1,0 +1,94 @@
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.pingme.ui.RegistroController"
+            prefWidth="720" prefHeight="500"
+            stylesheets="@registro.css">
+
+    <children>
+        <BorderPane AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0"
+                    AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+                    styleClass="root-panel">
+
+            <center>
+                <VBox spacing="18" alignment="TOP_CENTER">
+                    <padding>
+                        <Insets top="24" right="24" bottom="24" left="24"/>
+                    </padding>
+
+                    <!-- Encabezado -->
+                    <HBox alignment="CENTER" spacing="16">
+                        <Label text="Registro" styleClass="title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="PingMe" styleClass="brand"/>
+                    </HBox>
+
+                    <!-- Formulario -->
+                    <GridPane hgap="14" vgap="14" maxWidth="640">
+                        <columnConstraints>
+                            <ColumnConstraints halignment="LEFT" minWidth="140" prefWidth="160"/>
+                            <ColumnConstraints hgrow="ALWAYS"/>
+                        </columnConstraints>
+
+                        <!-- Email -->
+                        <Label text="Email" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="field-label"/>
+                        <TextField fx:id="emailField" promptText="tu@email.com"
+                                   GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                        <!-- Nombre de usuario -->
+                        <Label text="Nombre de usuario" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="field-label"/>
+                        <TextField fx:id="usuarioField" promptText="usuario123"
+                                   GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                        <!-- Contraseña -->
+                        <Label text="Contraseña" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="field-label"/>
+                        <PasswordField fx:id="passwordField" promptText="••••••••"
+                                       GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                        <!-- Edad -->
+                        <Label text="Edad" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="field-label"/>
+                        <TextField fx:id="edadField" promptText="Ej: 25"
+                                   GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                        <!-- Sexo -->
+                        <Label text="Sexo" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="field-label"/>
+                        <ComboBox fx:id="sexoCombo" GridPane.rowIndex="4" GridPane.columnIndex="1">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="Femenino"/>
+                                    <String fx:value="Masculino"/>
+                                    <String fx:value="Otro"/>
+                                    <String fx:value="Prefiero no decirlo"/>
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                    </GridPane>
+
+                    <!-- Botón Registrar -->
+                    <HBox alignment="CENTER">
+                        <Button fx:id="registrarBtn"
+                                text="Registrar"
+                                styleClass="primary-btn"
+                                onAction="#onRegistrar"/>
+                    </HBox>
+
+                </VBox>
+            </center>
+        </BorderPane>
+    </children>
+</AnchorPane>
