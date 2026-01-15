@@ -6,9 +6,7 @@
 
         <!-- Conexión -->
         <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-        <property name="hibernate.connection.url">
-            jdbc:mysql://localhost:3306/pingme?useSSL=false&serverTimezone=UTC
-        </property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/pingme?createDatabaseIfNotExist=true&amp;useSSL=false&amp;serverTimezone=UTC</property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">root</property>
 
@@ -21,15 +19,20 @@
         <property name="hibernate.hbm2ddl.auto">update</property>
         <property name="hibernate.connection.pool_size">10</property>
 
-        <!-- SOLO ENTIDADES -->
-        <mapping class="com.PingMe.entidades.Usuario"/>
-        <mapping class="com.PingMe.entidades.Mensaje"/>
-        <mapping class="com.PingMe.entidades.Sala"/>
-        <mapping class="com.PingMe.entidades.ServerPeticion"/>
-        <mapping class="com.PingMe.entidades.ServerRespuesta"/>
-        <mapping class="com.PingMe.entidades.TipoComando"/>
-
-        <!-- ELIMINADO: NO mapear controllers ni vistas -->
+        <!-- Declaración de clases mapeadas -->
+        <mapping class="backend.ChatManager"/>
+        <mapping class="backend.TcpConexionBasicaServer"/>
+        <mapping class="backend.UserManager"/>
+        <mapping class="entidades.Mensaje"/>
+        <mapping class="entidades.Sala"/>
+        <mapping class="entidades.ServerPeticion"/>
+        <mapping class="entidades.ServerRespuesta"/>
+        <mapping class="entidades.TipoComando"/>
+        <mapping class="entidades.Usuario"/>
+        <mapping class="frontend.PantallaLogin"/>
+        <mapping class="frontend.PantallaChat"/>
+        <mapping class="frontend.PantallaInicio"/>
+        <mapping class="conexionFrontend.TcpConexionBasicaClient"/>
 
     </session-factory>
 </hibernate-configuration>
