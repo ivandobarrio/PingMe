@@ -22,19 +22,19 @@
         <property name="hibernate.connection.pool_size">10</property>
 
         <!-- Declaración de clases mapeadas -->
-        <mapping class="com.PingMe.backend.ChatManager"/>
-        <mapping class="com.PingMe.backend.TcpConexionBasicaServer"/>
-        <mapping class="com.PingMe.backend.UserManager"/>
-        <mapping class="com.PingMe.entidades.Mensaje"/>
-        <mapping class="com.PingMe.entidades.Sala"/>
-        <mapping class="com.PingMe.entidades.ServerPeticion"/>
-        <mapping class="com.PingMe.entidades.ServerRespuesta"/>
-        <mapping class="com.PingMe.entidades.TipoComando"/>
-        <mapping class="com.PingMe.entidades.Usuario"/>
-        <mapping class="com.PingMe.frontend.PantallaLogin"/>
-        <mapping class="com.PingMe.frontend.PantallaChat"/>
-        <mapping class="com.PingMe.frontend.PantallaInicio"/>
-        <mapping class="com.PingMe.frontend.TcpConexionClient"/>
+        <mapping class="backend.ChatManager"/>
+        <mapping class="backend.TcpConexionBasicaServer"/>
+        <mapping class="backend.UserManager"/>
+        <mapping class="entidades.Mensaje"/>
+        <mapping class="entidades.Sala"/>
+        <mapping class="entidades.ServerPeticion"/>
+        <mapping class="entidades.ServerRespuesta"/>
+        <mapping class="entidades.TipoComando"/>
+        <mapping class="entidades.Usuario"/>
+        <mapping class="frontend.PantallaLogin"/>
+        <mapping class="frontend.PantallaChat"/>
+        <mapping class="frontend.PantallaInicio"/>
+        <mapping class="conexionFrontend.TcpConexionBasicaClient"/>
 
     </session-factory>
 </hibernate-configuration>

@@ -1,4 +1,3 @@
-
 package entidades;
 
 import javax.persistence.*;
