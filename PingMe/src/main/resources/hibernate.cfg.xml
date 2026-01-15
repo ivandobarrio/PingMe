@@ -1,40 +1,35 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 
 <hibernate-configuration>
     <session-factory>
 
-        <!-- Conexión a la base de datos -->
+        <!-- Conexión -->
         <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/pingme?useSSL=false&amp;serverTimezone=UTC</property>
+        <property name="hibernate.connection.url">
+            jdbc:mysql://localhost:3306/pingme?useSSL=false&serverTimezone=UTC
+        </property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">root</property>
 
-        <!-- Dialecto para MySQL -->
+        <!-- Dialecto -->
         <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
 
-        <!-- Configuración adicional -->
+        <!-- Configuración -->
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
         <property name="hibernate.hbm2ddl.auto">update</property>
-        <!-- Valores posibles: validate | update | create | create-drop -->
-
-        <!-- Pool de conexiones -->
         <property name="hibernate.connection.pool_size">10</property>
 
-        <!-- Declaración de clases mapeadas -->
-        <mapping class="com.PingMe.backend.ChatManager"/>
-        <mapping class="com.PingMe.backend.TcpConexionBasicaServer"/>
-        <mapping class="com.PingMe.backend.UserManager"/>
+        <!-- SOLO ENTIDADES -->
+        <mapping class="com.PingMe.entidades.Usuario"/>
         <mapping class="com.PingMe.entidades.Mensaje"/>
         <mapping class="com.PingMe.entidades.Sala"/>
         <mapping class="com.PingMe.entidades.ServerPeticion"/>
         <mapping class="com.PingMe.entidades.ServerRespuesta"/>
         <mapping class="com.PingMe.entidades.TipoComando"/>
-        <mapping class="com.PingMe.entidades.Usuario"/>
-        <mapping class="com.PingMe.frontend.PantallaLogin"/>
-        <mapping class="com.PingMe.frontend.PantallaChat"/>
-        <mapping class="com.PingMe.frontend.PantallaInicio"/>
-        <mapping class="com.PingMe.frontend.TcpConexionClient"/>
+
+        <!-- ELIMINADO: NO mapear controllers ni vistas -->
 
     </session-factory>
 </hibernate-configuration>
