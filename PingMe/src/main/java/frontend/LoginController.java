@@ -1,18 +1,14 @@
-
 package frontend;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -23,53 +19,70 @@ import java.util.function.Consumer;
 
 public class LoginController {
 
+    // --- Elementos del FXML ---
     @FXML private TextField usuarioField;
     @FXML private PasswordField passwordField;
     @FXML private Button loginBtn;
     @FXML private Button forgotBtn;
+    @FXML private Button registerBtn;
+
+    // =============================================================
+    //   CREDENCIALES DE PRUEBA (Para testear el Frontend)
+    // =============================================================
+    private static final String ADMIN_USER = "admin";
+    private static final String ADMIN_PASS = "admin123";
+
+    private static final String NORMAL_USER = "user";
+    private static final String NORMAL_PASS = "user123";
+    // =============================================================
 
     @FXML
     private void onLogin(ActionEvent event) {
         String usuario = usuarioField.getText() != null ? usuarioField.getText().trim() : "";
         String pass = passwordField.getText() != null ? passwordField.getText().trim() : "";
 
+        // 1. Validar que no estén vacíos
         if (usuario.isEmpty() || pass.isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Campos requeridos", "Introduce usuario y contraseña.");
+            showAlert(Alert.AlertType.WARNING, "Campos requeridos", "Por favor, introduce usuario y contraseña.");
             return;
         }
 
-        // Simulación de autenticación (quítalo cuando conectes tu backend)
-        boolean credencialesCorrectas =
-                ("admin".equalsIgnoreCase(usuario) && "admin".equals(pass)) ||
-                ("user".equalsIgnoreCase(usuario) && "user".equals(pass));
+        // 2. Comprobar credenciales
+        boolean esAdmin = usuario.equals(ADMIN_USER) && pass.equals(ADMIN_PASS);
+        boolean esUser = usuario.equals(NORMAL_USER) && pass.equals(NORMAL_PASS);
 
-        if (!credencialesCorrectas) {
-            showAlert(Alert.AlertType.ERROR, "Credenciales incorrectas", "Usuario o contraseña no válidos.");
+        if (!esAdmin && !esUser) {
+            showAlert(Alert.AlertType.ERROR, "Acceso denegado", "Usuario o contraseña incorrectos.\n\nPrueba con:\nadmin / admin123\nuser / user123");
             return;
         }
 
-        boolean esAdmin = "admin".equalsIgnoreCase(usuario);
-
+        // 3. Crear sesión básica
         Map<String, Object> session = new HashMap<>();
         session.put("username", usuario);
-        session.put("email", "");
-        session.put("isAdmin", esAdmin);
+        session.put("isAdmin", esAdmin); // Guardamos si es admin o no
 
+        // 4. Redirigir según el tipo de usuario
         if (esAdmin) {
-            goTo("/frontend/PantallaTickets.fxml", controller -> {
+            System.out.println(">> Iniciando como ADMINISTRADOR");
+            goTo("/frontend/PantallaInicioAdmin.fxml", controller -> {
                 if (controller instanceof AdminTicketsController) {
-                    AdminTicketsController ctrl = (AdminTicketsController) controller;
-                    ctrl.initSession(session);
+                    ((AdminTicketsController) controller).initSession(session);
                 }
             });
+
         } else {
-            showAlert(
-                    Alert.AlertType.INFORMATION,
-                    "Inicio de sesión correcto",
-                    "Has iniciado sesión como usuario normal.\nAún no existe una pantalla vinculada."
-            );
+            System.out.println(">> Iniciando como USUARIO NORMAL");
+            goTo("/frontend/PantallaInicio.fxml", controller -> {
+                if (controller instanceof PantallaInicio) {
+                    ((PantallaInicio) controller).initSession(session);
+                }
+            });
         }
     }
+
+    // ===========================================
+    //           OTRAS ACCIONES
+    // ===========================================
 
     @FXML
     private void onForgot(ActionEvent event) {
@@ -77,19 +90,23 @@ public class LoginController {
     }
 
     @FXML
-    private void onOpenRegistrar(ActionEvent event) {
-        openModal("/frontend/PantallaRegistro.fxml", "Crear cuenta");
+    private void onRegister(ActionEvent event) {
+        goTo("/frontend/PantallaRegistro.fxml", null);
     }
 
-    // ==== Utilidades =====
+    // ===========================================
+    //           UTILIDADES DE NAVEGACIÓN
+    // ===========================================
 
     private void goTo(String fxmlPath, Consumer<Object> controllerConsumer) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
 
-            Object controller = loader.getController();
-            if (controllerConsumer != null) controllerConsumer.accept(controller);
+            if (controllerConsumer != null) {
+                Object controller = loader.getController();
+                controllerConsumer.accept(controller);
+            }
 
             Stage stage = (Stage) loginBtn.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -98,7 +115,7 @@ public class LoginController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Error de navegación", "No se pudo abrir la ventana solicitada: " + fxmlPath);
+            showAlert(Alert.AlertType.ERROR, "Error de navegación", "No se pudo cargar la pantalla: " + fxmlPath + "\nVerifica que el archivo existe y el controller está bien asignado.");
         }
     }
 
@@ -117,7 +134,7 @@ public class LoginController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Error al abrir ventana", "No se pudo abrir la ventana: " + fxmlPath);
+            showAlert(Alert.AlertType.ERROR, "Error", "No se pudo abrir la ventana: " + fxmlPath);
         }
     }
 
