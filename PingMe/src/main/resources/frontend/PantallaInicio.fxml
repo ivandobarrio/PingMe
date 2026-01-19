@@ -51,20 +51,18 @@
                                 </ListView>
                             </content>
                         </Tab>
-                        <Tab text="Salas">
-                            <content>
-                                <ListView fx:id="salasList">
-                                    <items>
-                                        <FXCollections fx:factory="observableArrayList">
-                                            <String fx:value="Sala1"/>
-                                            <String fx:value="Sala2"/>
-                                            <String fx:value="Sala3"/>
-                                            <String fx:value="Sala4"/>
-                                        </FXCollections>
-                                    </items>
-                                </ListView>
-                            </content>
-                        </Tab>
+                       <Tab text="Salas">
+						    <content>
+						        <VBox spacing="8">
+						            <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+						            <ListView fx:id="salasList" VBox.vgrow="ALWAYS"/>
+						            <HBox spacing="5">
+						                <Button text="+ Crear" onAction="#onCrearSala" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="primary-btn"/>
+						                <Button text="# Unirse" onAction="#onUnirseSala" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="secondary-btn"/>
+						            </HBox>
+						        </VBox>
+						    </content>
+						</Tab>
                     </tabs>
                 </TabPane>
             </VBox>

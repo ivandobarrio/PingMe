@@ -5,9 +5,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -15,177 +17,206 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class PantallaInicio {
 
-    // --- Elementos de la Interfaz (IDs del FXML) ---
     @FXML private Label usuarioLabel;
-    @FXML private Button logoutBtn;
-    @FXML private Button ticketsBtn;
-
-    // Listas (Izquierda)
     @FXML private ListView<String> chatsList;
     @FXML private ListView<String> salasList;
-
-    // Chat (Derecha)
     @FXML private Label tituloConversacion;
     @FXML private VBox mensajesBox;
     @FXML private TextField mensajeField;
-    @FXML private Button enviarBtn;
-    @FXML private Button adjuntoBtn;
-    
-    // Estado
     @FXML private Label estadoLabel;
+    @FXML private Button logoutBtn;
 
-    // Variables de sesión
     private Map<String, Object> session;
+    
+    // Simulación de base de datos de salas privadas: Clave = Código, Valor = Nombre de la Sala
+    private final Map<String, String> repositorioSalasPrivadas = new HashMap<>();
 
-    // =================================================
-    // MÉTODOS DE INICIALIZACIÓN
-    // =================================================
-
-    // Este método se ejecuta automáticamente al cargar el FXML
     @FXML
     public void initialize() {
-        // Inicializamos las listas con datos de prueba
-        // (Aquí más adelante conectarás con tu Base de Datos)
-        ObservableList<String> misChats = FXCollections.observableArrayList(
-                "Juan Pérez", "Soporte Técnico", "Ana García"
-        );
-        chatsList.setItems(misChats);
-
-        ObservableList<String> misSalas = FXCollections.observableArrayList(
-                "Sala General", "Proyecto JavaFX"
-        );
-        salasList.setItems(misSalas);
-
-        // Listener: Qué pasa cuando haces clic en un Chat
-        chatsList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                salasList.getSelectionModel().clearSelection(); // Desmarcar sala si había una
-                abrirConversacion(newVal, "Chat Privado");
-            }
-        });
-
-        // Listener: Qué pasa cuando haces clic en una Sala
+        salasList.setItems(FXCollections.observableArrayList("Sala General [Público]"));
+        
+        // Listener para seleccionar sala
         salasList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
-                chatsList.getSelectionModel().clearSelection(); // Desmarcar chat si había uno
-                abrirConversacion(newVal, "Sala Grupal");
+                chatsList.getSelectionModel().clearSelection();
+                abrirConversacion(newVal, "Sala");
             }
         });
-    }
-
-    // Este método lo llamamos desde el Login para pasar los datos del usuario
-    public void initSession(Map<String, Object> session) {
-        this.session = session;
-        String username = (String) session.getOrDefault("username", "Usuario");
-        usuarioLabel.setText(username);
-    }
-
-    // =================================================
-    // LÓGICA DEL CHAT
-    // =================================================
-
-    private void abrirConversacion(String nombre, String tipo) {
-        tituloConversacion.setText(nombre + " (" + tipo + ")");
-        mensajesBox.getChildren().clear(); // Limpiamos el chat anterior
-
-        // Mensaje de bienvenida simulado
-        agregarBurbujaMensaje("Te has unido a " + nombre, false);
-    }
-
-    @FXML
-    private void onEnviar(ActionEvent event) {
-        String texto = mensajeField.getText().trim();
-        if (!texto.isEmpty()) {
-            // true = mensaje mío (se pinta distinto)
-            agregarBurbujaMensaje(texto, true);
-            mensajeField.clear();
-        }
-    }
-
-    @FXML
-    private void onAdjuntar(ActionEvent event) {
-        // Lógica futura para adjuntar archivos
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Función de adjuntar archivos próximamente.");
-        alert.show();
     }
     
     @FXML
     private void onInfoChat(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Estás viendo: " + tituloConversacion.getText());
-        alert.show();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Información");
+        alert.setHeaderText(null);
+        alert.setContentText("Estás viendo la conversación de: " + tituloConversacion.getText());
+        alert.showAndWait();
     }
-
-    // Método auxiliar para pintar los mensajes bonito
-    private void agregarBurbujaMensaje(String texto, boolean esMio) {
-        Text textNode = new Text(texto);
-        TextFlow flow = new TextFlow(textNode);
-
-        if (esMio) {
-            // Estilo para mis mensajes (Verde clarito, alineado a la derecha visualmente)
-            flow.setStyle("-fx-background-color: #dcf8c6; -fx-padding: 10px; -fx-background-radius: 10px;");
-            // Nota: Para alinear a la derecha de verdad, habría que meter el TextFlow en un HBox, 
-            // pero para este ejemplo básico sirve así.
-        } else {
-            // Estilo para mensajes recibidos (Blanco/Gris)
-            flow.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 10px; -fx-background-radius: 10px;");
-        }
-        
-        mensajesBox.getChildren().add(flow);
-        mensajesBox.setSpacing(10); // Espacio entre burbujas
-    }
-
-    // =================================================
-    // NAVEGACIÓN (LOGOUT Y TICKETS)
-    // =================================================
-
+    
     @FXML
-    private void onTickets(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/frontend/PantallaTickets.fxml"));
-            Parent root = loader.load();
-
-            // Pasamos el usuario al controlador de tickets para saber quién lo envía
-            PantallaTickets ticketsCtrl = loader.getController();
-            if (session != null) {
-                ticketsCtrl.setUsuario((String) session.get("username"));
-            }
-
-            // Abrir como ventana modal (bloquea la de atrás)
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Nuevo Ticket de Incidencia");
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            mostrarError("No se pudo abrir la ventana de Tickets.");
-        }
+    private void onAdjuntar(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Adjuntar archivo");
+        alert.setHeaderText(null);
+        alert.setContentText("La funcionalidad para adjuntar archivos estará disponible en la próxima actualización.");
+        alert.showAndWait();
     }
-
+    
     @FXML
     private void onLogout(ActionEvent event) {
         try {
+            // 1. Cargar el FXML del Login
+            // Nota: Asegúrate de que la ruta sea exactamente donde está tu login
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/frontend/PantallaLogin.fxml"));
             Parent root = loader.load();
             
+            // 2. Obtener el Stage (ventana) actual desde cualquier botón
+            // Usamos logoutBtn que es el botón de la barra superior
             Stage stage = (Stage) logoutBtn.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            
+            // 3. Cambiar la escena y centrar
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("PingMe - Iniciar Sesión");
             stage.centerOnScreen();
+            stage.show();
+            
+            System.out.println("Sesión cerrada correctamente por el usuario.");
             
         } catch (IOException e) {
             e.printStackTrace();
-            mostrarError("Error al cerrar sesión.");
+            mostrarError("No se pudo volver a la pantalla de login.");
+        } catch (NullPointerException e) {
+            System.err.println("Error: No se encontró el archivo FXML del Login.");
+            mostrarError("Error crítico: Archivo de vista no encontrado.");
         }
     }
-    
-    private void mostrarError(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setContentText(mensaje);
-        alert.show();
+
+    // =================================================
+    // LÓGICA DE CREACIÓN (CREADOR SE HACE MIEMBRO)
+    // =================================================
+    @FXML
+    private void onCrearSala(ActionEvent event) {
+        Dialog<Map<String, String>> dialog = new Dialog<>();
+        dialog.setTitle("Nueva Sala");
+        
+        ButtonType crearBtnType = new ButtonType("Crear", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(crearBtnType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10); grid.setVgap(10);
+        TextField nombreField = new TextField();
+        ToggleGroup group = new ToggleGroup();
+        RadioButton rbPub = new RadioButton("Público"); rbPub.setToggleGroup(group); rbPub.setSelected(true);
+        RadioButton rbPriv = new RadioButton("Privado"); rbPriv.setToggleGroup(group);
+
+        grid.add(new Label("Nombre:"), 0, 0); grid.add(nombreField, 1, 0);
+        grid.add(rbPub, 1, 1); grid.add(rbPriv, 1, 2);
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.setResultConverter(btn -> {
+            if (btn == crearBtnType) {
+                Map<String, String> res = new HashMap<>();
+                res.put("nombre", nombreField.getText());
+                res.put("tipo", rbPub.isSelected() ? "Público" : "Privado");
+                return res;
+            }
+            return null;
+        });
+
+        dialog.showAndWait().ifPresent(res -> {
+            String nombre = res.get("nombre");
+            if (res.get("tipo").equals("Privado")) {
+                String codigo = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+                repositorioSalasPrivadas.put(codigo, nombre); // Guardamos en el "servidor"
+                
+                // Al ser el creador, se añade a MI lista directamente
+                salasList.getItems().add(nombre + " [Privado]");
+                
+                mensajeField.setText("He creado una sala privada. Código: " + codigo);
+                mostrarInfo("Sala Privada", "Código generado: " + codigo + "\nSolo quienes tengan el código podrán unirse.");
+            } else {
+                salasList.getItems().add(nombre + " [Público]");
+            }
+        });
     }
+
+    // =================================================
+    // LÓGICA DE UNIRSE (SÓLO APARECE SI PONE EL CÓDIGO)
+    // =================================================
+    @FXML
+    private void onUnirseSala(ActionEvent event) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Unirse a Sala Privada");
+        dialog.setHeaderText("Introduce el código de invitación");
+        dialog.setContentText("Código:");
+
+        dialog.showAndWait().ifPresent(codigo -> {
+            String codigoBusqueda = codigo.trim().toUpperCase();
+            
+            if (repositorioSalasPrivadas.containsKey(codigoBusqueda)) {
+                String nombreSala = repositorioSalasPrivadas.get(codigoBusqueda);
+                String itemLista = nombreSala + " [Privado]";
+                
+                // Evitar duplicados en la lista del usuario
+                if (!salasList.getItems().contains(itemLista)) {
+                    salasList.getItems().add(itemLista);
+                    estadoLabel.setText("Te has unido a " + nombreSala);
+                    abrirConversacion(itemLista, "Sala");
+                } else {
+                    mostrarError("Ya eres miembro de esta sala.");
+                }
+            } else {
+                mostrarError("El código introducido no es válido.");
+            }
+        });
+    }
+
+    // =================================================
+    // MÉTODOS DE SOPORTE
+    // =================================================
+    private void abrirConversacion(String nombre, String tipo) {
+        tituloConversacion.setText(nombre);
+        mensajesBox.getChildren().clear();
+        agregarBurbujaMensaje("Bienvenido a la " + tipo + ": " + nombre, false);
+    }
+
+    @FXML
+    private void onEnviar(ActionEvent event) {
+        if (!mensajeField.getText().trim().isEmpty()) {
+            agregarBurbujaMensaje(mensajeField.getText(), true);
+            mensajeField.clear();
+        }
+    }
+
+    private void agregarBurbujaMensaje(String texto, boolean esMio) {
+        Text t = new Text(texto);
+        TextFlow flow = new TextFlow(t);
+        flow.setStyle("-fx-background-color: " + (esMio ? "#dcf8c6" : "#f0f0f0") + 
+                      "; -fx-padding: 10; -fx-background-radius: 10;");
+        mensajesBox.getChildren().add(flow);
+    }
+
+    private void mostrarInfo(String titulo, String msg) {
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
+        a.setTitle(titulo); a.setContentText(msg); a.show();
+    }
+
+    private void mostrarError(String msg) {
+        Alert a = new Alert(Alert.AlertType.ERROR);
+        a.setContentText(msg); a.show();
+    }
+
+    // Métodos necesarios para la sesión y navegación (clase original)
+    public void initSession(Map<String, Object> session) { 
+        this.session = session; 
+        usuarioLabel.setText((String)session.get("username")); 
+    }
+    @FXML private void onTickets() { /* lógica tickets */ }
 }
