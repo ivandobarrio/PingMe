@@ -8,15 +8,59 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.util.Properties;
+
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
+
 public class RecuperarContraseñaController {
+	
+	final String ADMIN = "24dm.janire.martinez@arangoya.net";
+	final String PASSWORD = "xdcr lfsm nvth wdma";
 
     @FXML private TextField emailField;
     @FXML private Button recuperarBtn;
 
     @FXML
-    private void onRecuperar(ActionEvent event) {
+    private void onRecuperar(ActionEvent event) throws AddressException, MessagingException {
+    			
+    			String emailUser = emailField.getText();
+    	
+    			// 1) Propiedades SMTP
+    			Properties props = new Properties();
+    			props.put("mail.transport.protocol", "smtp");
+    			props.put("mail.smtp.host", "smtp.gmail.com");
+    			props.put("mail.smtp.port", "587");
+    			props.put("mail.smtp.auth", "true");
+    			props.put("mail.smtp.starttls.enable", "true"); // STARTTLS
+    			
+    			// 2) Session
+    			jakarta.mail.Session session = Session.getInstance(props);
+    			
+    			// 3) Message
+    			Message message = new MimeMessage(session);
+    			message.setFrom(new InternetAddress(ADMIN));
+    			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailUser));
+    			message.setSubject("Contraseña PingMe");
+    			message.setText("...");
+    			
+    			// 4) Conexión + envío
+    			Transport transport = session.getTransport();
+    			try {
+    				transport.connect("smtp.gmail.com", ADMIN, PASSWORD);
+    				transport.sendMessage(message, message.getAllRecipients());
+    				System.out.println("Email enviado correctamente.");
+    			} finally {
+    				// 5) Cerrar
+    				transport.close();
+    			}
 
-        String email = emailField.getText() != null
+        /*String email = emailField.getText() != null
                 ? emailField.getText().trim()
                 : "";
 
@@ -53,6 +97,6 @@ public class RecuperarContraseñaController {
         Alert alert = new Alert(type);
         alert.setHeaderText(header);
         alert.setContentText(content);
-        alert.showAndWait();
+        alert.showAndWait();*/
     }
 }

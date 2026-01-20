@@ -28,7 +28,7 @@
         <mapping class="entidades.ServerRespuesta"/>
         <mapping class="entidades.TipoComando"/>
         <mapping class="entidades.Usuario"/>
-        <mapping class="frontend.PantallaLogin"/>
+        <mapping class="main.Main"/>
         <mapping class="frontend.PantallaChat"/>
         <mapping class="frontend.PantallaInicio"/>
         <mapping class="conexionFrontend.TcpConexionBasicaClient"/>
