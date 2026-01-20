@@ -46,7 +46,7 @@ public class RecuperarContraseñaController {
     			Message message = new MimeMessage(session);
     			message.setFrom(new InternetAddress(ADMIN));
     			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailUser));
-    			message.setSubject("Contraseña PingMe");
+    			message.setSubject("Hello world");
     			message.setText("...");
     			
     			// 4) Conexión + envío
