@@ -18,13 +18,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="500" prefWidth="720" stylesheets="@styles.css" styleClass="anchor-pane" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.RegistroController">
+<AnchorPane prefHeight="600.0" prefWidth="720" styleClass="anchor-pane" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.RegistroController">
 
     <children>
         <BorderPane styleClass="root-panel" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
 
             <center>
-                <VBox alignment="TOP_CENTER" spacing="18">
+                <VBox alignment="TOP_CENTER" prefHeight="543.0" prefWidth="720.0" spacing="18">
                     <padding>
                         <Insets bottom="24" left="24" right="24" top="24" />
                     </padding>
@@ -43,31 +43,33 @@
                     </HBox>
 
                     <!-- Formulario -->
-                    <GridPane hgap="14" maxWidth="640.0" prefHeight="361.0" prefWidth="640.0" vgap="14">
+                    <GridPane hgap="14" maxWidth="646.0" prefHeight="474.0" prefWidth="646.0" vgap="14">
                         <columnConstraints>
-                            <ColumnConstraints halignment="LEFT" minWidth="140" prefWidth="160" />
-                            <ColumnConstraints hgrow="ALWAYS" />
+                            <ColumnConstraints halignment="LEFT" minWidth="140.0" prefWidth="160.0" />
+                            <ColumnConstraints hgrow="ALWAYS" maxWidth="400.0000366210937" minWidth="210.39996337890622" prefWidth="210.39996337890622" />
+                     <ColumnConstraints hgrow="ALWAYS" maxWidth="250.00003662109373" minWidth="10.0" prefWidth="250.00003662109373" />
+                     <ColumnConstraints hgrow="ALWAYS" maxWidth="250.00003662109373" minWidth="10.0" prefWidth="250.00003662109373" />
                         </columnConstraints>
 
                         <!-- Email -->
                         <Label styleClass="field-label" text="Email" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                        <TextField fx:id="emailField" promptText="tu@email.com" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                        <TextField fx:id="emailField" promptText="tu@email.com" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="0" />
 
                         <!-- Nombre de usuario -->
                         <Label styleClass="field-label" text="Nombre de usuario" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                        <TextField fx:id="usuarioField" promptText="usuario123" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField fx:id="usuarioField" promptText="usuario123" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
 
                         <!-- Contraseña -->
                         <Label styleClass="field-label" text="Contraseña" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                        <PasswordField fx:id="passwordField" promptText="••••••••" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <PasswordField fx:id="passwordField" promptText="••••••••" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
 
                         <!-- Edad -->
                         <Label styleClass="field-label" text="Edad" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                        <TextField fx:id="edadField" promptText="Ej: 25" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <TextField fx:id="edadField" prefHeight="21.0" prefWidth="466.0" promptText="Ej: 25" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
                         <!-- Sexo -->
-                        <Label styleClass="field-label" text="Sexo" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                        <ComboBox fx:id="sexoCombo" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                        <Label styleClass="field-label" text="Sexo" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <ComboBox fx:id="sexoCombo" GridPane.columnIndex="3" GridPane.rowIndex="3">
                             <items>
                                 <FXCollections fx:factory="observableArrayList">
                                     <String fx:value="Femenino" />
@@ -77,28 +79,31 @@
                                 </FXCollections>
                             </items>
                         </ComboBox>
-                  <Label text="Pregunta seguridad 1" GridPane.rowIndex="5" />
-                  <Label text="Pregunta seguridad 2" GridPane.rowIndex="7" />
-                  <ComboBox fx:id="pregunta1Combo" prefHeight="26.0" prefWidth="438.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                  <ComboBox fx:id="pregunta2Combo" prefHeight="26.0" prefWidth="442.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                  <TextField fx:id="respuesta1Field" promptText="respuesta" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                  <TextField fx:id="respuesta2Field" promptText="respuesta" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                  <Label styleClass="field-label" text="Pregunta seguridad" GridPane.rowIndex="5" />
+                  <Label styleClass="field-label" text="Pregunta seguridad " GridPane.rowIndex="7" />
+                  <ComboBox fx:id="pregunta1Combo" prefHeight="42.0" prefWidth="438.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="5">
+                     <GridPane.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                     </GridPane.margin></ComboBox>
+                  <ComboBox fx:id="pregunta2Combo" prefHeight="26.0" prefWidth="442.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="7" />
+                  <TextField fx:id="respuesta1Field" prefHeight="42.0" prefWidth="427.0" promptText="respuesta" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="6" />
+                  <TextField fx:id="respuesta2Field" prefHeight="58.0" prefWidth="210.0" promptText="respuesta" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="8" />
                   <rowConstraints>
                      <RowConstraints />
                      <RowConstraints />
                      <RowConstraints />
                      <RowConstraints />
                      <RowConstraints />
-                     <RowConstraints minHeight="10.0" prefHeight="30.0" />
-                     <RowConstraints minHeight="10.0" prefHeight="30.0" />
-                     <RowConstraints minHeight="10.0" prefHeight="30.0" />
-                     <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                     <RowConstraints minHeight="10.0" prefHeight="40.0" />
+                     <RowConstraints minHeight="10.0" prefHeight="40.0" />
+                     <RowConstraints minHeight="10.0" prefHeight="40.0" />
+                     <RowConstraints minHeight="10.0" prefHeight="40.0" />
                   </rowConstraints>
                     </GridPane>
 
                     <!-- Botón Registrar -->
                     <HBox alignment="CENTER">
-                        <Button fx:id="registrarBtn" onAction="#onRegistrar"  text="Registrar" />
+                        <Button fx:id="registrarBtn" onAction="#onRegistrar" text="Registrar" />
                     </HBox>
 
                 </VBox>

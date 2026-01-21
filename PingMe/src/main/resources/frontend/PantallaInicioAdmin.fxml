@@ -8,7 +8,7 @@
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="frontend.AdminTicketsController"
             prefWidth="980" prefHeight="620"
-            stylesheets="@registro.css">
+            stylesheets="@styles.css">
 
     <!-- ===== Barra superior ===== -->
     <top>

@@ -63,8 +63,8 @@ public class RegistroController {
 		// Validaciones básicas
 		// ==========================
 
-		if (email.isEmpty() || usuario.isEmpty() || pass.isEmpty()) {
-			showAlert(Alert.AlertType.WARNING, "Campos obligatorios", "Email, usuario y contraseña son obligatorios.");
+		if (email.isEmpty() || usuario.isEmpty() || pass.isEmpty() || respuesta1.isEmpty() || respuesta2.isEmpty())  {
+			showAlert(Alert.AlertType.WARNING, "Campos obligatorios", "Email, usuario, contraseña y las preguntas son obligatorios.");
 			return;
 		}
 
