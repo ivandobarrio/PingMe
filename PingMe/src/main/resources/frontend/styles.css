@@ -1,0 +1,45 @@
+.button {
+    -fx-background-color: #F0F0F0;
+    -fx-text-fill: black;
+
+    -fx-border-color: black;
+    -fx-border-width: 0.5px;
+
+    -fx-background-radius: 500px;
+    -fx-border-radius: 500px;
+
+    -fx-padding: 8 10;   
+
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+
+.anchor-pane {
+	-fx-background-color: #D6FFFF; 
+}
+
+
+.text-field,
+.password-field {
+    -fx-background-color: #FFFFFF;       
+    -fx-text-fill: black;
+
+    -fx-background-radius: 500px;
+    -fx-border-radius: 500px;
+
+    -fx-border-color: #00000055;        
+    -fx-border-width: 2px;
+
+    -fx-padding: 10 15;
+    -fx-focus-color: transparent;
+}
+
+
+.field-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+    -fx-font-weight: bold;
+    -fx-label-padding: 0 0 4 4; 
+}
+
+   
