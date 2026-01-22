@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="720" styleClass="anchor-pane" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.RegistroController">
+<AnchorPane prefHeight="500.0" prefWidth="720" styleClass="anchor-pane" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.RegistroController">
 
     <children>
         <BorderPane styleClass="root-panel" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
@@ -80,22 +80,17 @@
                             </items>
                         </ComboBox>
                   <Label styleClass="field-label" text="Pregunta seguridad" GridPane.rowIndex="5" />
-                  <Label styleClass="field-label" text="Pregunta seguridad " GridPane.rowIndex="7" />
                   <ComboBox fx:id="pregunta1Combo" prefHeight="42.0" prefWidth="438.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="5">
                      <GridPane.margin>
                         <Insets bottom="10.0" top="10.0" />
                      </GridPane.margin></ComboBox>
-                  <ComboBox fx:id="pregunta2Combo" prefHeight="26.0" prefWidth="442.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="7" />
                   <TextField fx:id="respuesta1Field" prefHeight="42.0" prefWidth="427.0" promptText="respuesta" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="6" />
-                  <TextField fx:id="respuesta2Field" prefHeight="58.0" prefWidth="210.0" promptText="respuesta" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="8" />
                   <rowConstraints>
                      <RowConstraints />
                      <RowConstraints />
                      <RowConstraints />
                      <RowConstraints />
                      <RowConstraints />
-                     <RowConstraints minHeight="10.0" prefHeight="40.0" />
-                     <RowConstraints minHeight="10.0" prefHeight="40.0" />
                      <RowConstraints minHeight="10.0" prefHeight="40.0" />
                      <RowConstraints minHeight="10.0" prefHeight="40.0" />
                   </rowConstraints>

@@ -24,10 +24,7 @@ public class RegistroController {
 	private ComboBox<String> pregunta1Combo;
 	@FXML
 	private TextField respuesta1Field;
-	@FXML
-	private ComboBox<String> pregunta2Combo;
-	@FXML
-	private TextField respuesta2Field;
+
 
 	@FXML
 	public void initialize() {
@@ -37,13 +34,6 @@ public class RegistroController {
 				"¿Cuál es el segundo nombre de tu madre o padre?",
 				"¿Cuál fue el nombre de tu primer colegio?",
 				"¿Cómo se llamaba tu profesor favorito de la infancia?");
-		
-		pregunta2Combo.getItems().addAll(
-				"¿Cuál es el modelo de tu primer coche?", 
-				"¿Cuál es el nombre de tu mejor amigo/a de la infancia?", 
-				"¿Cuál fue tu primer trabajo?",
-				"¿Cuál es tu comida favorita de la infancia?",
-				"¿Cuál es el título de tu libro favorito?");
 	}
 
 	@FXML
@@ -56,14 +46,12 @@ public class RegistroController {
 		String sexo = sexoCombo.getValue();
 		String preguntaSeguridad1 = pregunta1Combo.getValue();
 		String respuesta1 = safeTxt(respuesta1Field);
-		String preguntaSeguridad2 = pregunta2Combo.getValue();
-		String respuesta2 = safeTxt(respuesta1Field);
 
 		// ==========================
 		// Validaciones básicas
 		// ==========================
 
-		if (email.isEmpty() || usuario.isEmpty() || pass.isEmpty() || respuesta1.isEmpty() || respuesta2.isEmpty())  {
+		if (email.isEmpty() || usuario.isEmpty() || pass.isEmpty() || respuesta1.isEmpty() )  {
 			showAlert(Alert.AlertType.WARNING, "Campos obligatorios", "Email, usuario, contraseña y las preguntas son obligatorios.");
 			return;
 		}
