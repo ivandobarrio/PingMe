@@ -11,102 +11,78 @@
             prefWidth="980" prefHeight="620"
             stylesheets="@registro.css">
 
-    <!-- ===== TOP BAR ===== -->
     <top>
         <HBox spacing="12" alignment="CENTER_LEFT" styleClass="root-panel">
             <padding><Insets top="8" right="12" bottom="8" left="12"/></padding>
-
             <Label text="PingMe" styleClass="brand"/>
             <Region HBox.hgrow="ALWAYS"/>
-
-            <!-- FP-Nombre de usuario -->
-            <Label fx:id="usuarioLabel" text="FP-Nombre de usuario" styleClass="title"/>
-
+            <Label fx:id="usuarioLabel" text="Usuario" styleClass="title"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Button fx:id="logoutBtn" text="Cerrar sesión" onAction="#onLogout" styleClass="primary-btn"/>
-            <Button fx:id="ticketsBtn" text="Tickets" onAction="#onTickets" styleClass="primary-btn secondary-btn"/>
+            <Button text="Tickets" onAction="#onTickets" styleClass="primary-btn secondary-btn"/>
         </HBox>
     </top>
 
-    <!-- ===== CENTER: Split entre lista izquierda y chat derecho ===== -->
     <center>
         <SplitPane dividerPositions="0.30">
-            <!-- Panel izquierdo: listas de Chats / Salas -->
             <VBox>
                 <padding><Insets top="8" right="8" bottom="8" left="8"/></padding>
                 <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
                     <tabs>
                         <Tab text="Chats">
                             <content>
-                                <ListView fx:id="chatsList">
-                                    <items>
-                                        <FXCollections fx:factory="observableArrayList">
-                                            <String fx:value="Chat1-Persona 1"/>
-                                            <String fx:value="Chat2-Persona 2"/>
-                                            <String fx:value="Chat3-Persona 3"/>
-                                            <String fx:value="Chat4-Persona 4"/>
-                                            <String fx:value="Chat5-Persona 5"/>
-                                        </FXCollections>
-                                    </items>
-                                </ListView>
+                                <ListView fx:id="chatsList"/>
                             </content>
                         </Tab>
-                       <Tab text="Salas">
-						    <content>
-						        <VBox spacing="8">
-						            <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
-						            <ListView fx:id="salasList" VBox.vgrow="ALWAYS"/>
-						            <HBox spacing="5">
-						                <Button text="+ Crear" onAction="#onCrearSala" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="primary-btn"/>
-						                <Button text="# Unirse" onAction="#onUnirseSala" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="secondary-btn"/>
-						            </HBox>
-						        </VBox>
-						    </content>
-						</Tab>
+                        <Tab text="Salas">
+                            <content>
+                                <VBox spacing="8">
+                                    <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                                    <ListView fx:id="salasList" VBox.vgrow="ALWAYS"/>
+                                    <HBox spacing="5">
+                                        <Button text="+ Crear" onAction="#onCrearSala" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="primary-btn"/>
+                                        <Button text="# Unirse" onAction="#onUnirseSala" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="secondary-btn"/>
+                                    </HBox>
+                                </VBox>
+                            </content>
+                        </Tab>
                     </tabs>
                 </TabPane>
             </VBox>
 
-            <!-- Panel derecho: conversación -->
             <BorderPane>
-                <!-- Cabecera conversación -->
                 <top>
-                    <HBox alignment="CENTER_LEFT">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
                         <padding><Insets top="8" right="12" bottom="8" left="12"/></padding>
                         <Label fx:id="tituloConversacion" text="Selecciona un chat o sala" styleClass="field-label"/>
                         <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="Historia de Sala" onAction="#onHistoriaSala" styleClass="secondary-btn"/>
                         <Button text="Info" onAction="#onInfoChat" styleClass="secondary-btn"/>
                     </HBox>
                 </top>
 
-                <!-- Zona de mensajes -->
                 <center>
                     <ScrollPane fitToWidth="true" hbarPolicy="NEVER">
                         <content>
                             <VBox fx:id="mensajesBox" spacing="8" fillWidth="true">
                                 <padding><Insets top="8" right="12" bottom="8" left="12"/></padding>
-                                <HBox alignment="CENTER_LEFT">
-                                    <Text text="👋 ¡Bienvenido a PingMe! Selecciona un chat para empezar."/>
-                                </HBox>
                             </VBox>
                         </content>
                     </ScrollPane>
                 </center>
 
-                <!-- Barra de envío -->
                 <bottom>
                     <HBox spacing="8" alignment="CENTER_LEFT">
                         <padding><Insets top="8" right="12" bottom="8" left="12"/></padding>
                         <TextField fx:id="mensajeField" promptText="Escribe un mensaje…" HBox.hgrow="ALWAYS"/>
-                        <Button fx:id="adjuntoBtn" text="Adjuntar" onAction="#onAdjuntar" styleClass="secondary-btn"/>
-                        <Button fx:id="enviarBtn" text="Enviar" onAction="#onEnviar" styleClass="primary-btn"/>
+                        <Button text="Adjuntar" onAction="#onAdjuntar" styleClass="secondary-btn"/>
+                        <Button text="Enviar" onAction="#onEnviar" styleClass="primary-btn"/>
                     </HBox>
                 </bottom>
             </BorderPane>
         </SplitPane>
     </center>
 
-    <!-- Barra inferior opcional -->
     <bottom>
         <HBox alignment="CENTER_LEFT">
             <padding><Insets top="4" right="10" bottom="6" left="10"/></padding>
