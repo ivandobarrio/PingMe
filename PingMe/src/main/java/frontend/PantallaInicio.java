@@ -188,8 +188,65 @@ public class PantallaInicio {
     private void mostrarError(String m) { Alert a = new Alert(Alert.AlertType.ERROR); a.setContentText(m); a.show(); }
     public void initSession(Map<String, Object> session) { this.session = session; usuarioLabel.setText((String)session.get("username")); }
     
-    @FXML private void onInfoChat() { /* Ya implementado por ti */ }
-    @FXML private void onAdjuntar() { /* Ya implementado por ti */ }
-    @FXML private void onTickets() { /* lógica tickets */ }
-    @FXML private void onLogout(ActionEvent event) { /* Lógica de logout */ }
+ // --- ACCIONES DE LA CABECERA ---
+
+    @FXML 
+    private void onInfoChat(ActionEvent event) {
+        String salaActual = tituloConversacion.getText();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Información del Chat");
+        alert.setHeaderText(null);
+        alert.setContentText("Estás viendo la conversación de: " + salaActual);
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void onTickets(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/frontend/PantallaTickets.fxml"));
+            Parent root = loader.load();
+
+            // Pasar el usuario a la pantalla de tickets
+            PantallaTickets controller = loader.getController();
+            controller.setUsuario(usuarioLabel.getText());
+
+            Stage stage = new Stage();
+            stage.setTitle("Soporte - Enviar Ticket");
+            stage.setScene(new Scene(root));
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL); 
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarError("No se pudo cargar la pantalla de tickets.");
+        }
+    }
+
+    // --- ACCIONES DE LA BARRA DE MENSAJES ---
+
+    @FXML
+    private void onAdjuntar(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Adjuntar archivo");
+        alert.setHeaderText(null);
+        alert.setContentText("La funcionalidad para adjuntar archivos estará disponible próximamente.");
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void onLogout(ActionEvent event) {
+        try {
+            // Asegúrate de que esta ruta coincida con tu archivo de Login
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/frontend/PantallaLogin.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) logoutBtn.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("PingMe - Iniciar Sesión");
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarError("Error al cerrar sesión.");
+        }
+    }
 }
