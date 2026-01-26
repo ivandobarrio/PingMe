@@ -14,7 +14,7 @@
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="frontend.PantallaTickets"
             prefWidth="860" prefHeight="520"
-            stylesheets="@registro.css">
+            stylesheets="@styles.css">
 
     <!-- ===== Barra superior ===== -->
     <top>

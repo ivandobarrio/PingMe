@@ -8,98 +8,108 @@ import javafx.stage.Stage;
 
 public class RegistroController {
 
-    @FXML private TextField emailField;
-    @FXML private TextField usuarioField;
-    @FXML private PasswordField passwordField;
-    @FXML private TextField edadField;
-    @FXML private ComboBox<String> sexoCombo;
-    @FXML private Button registrarBtn;
+	@FXML
+	private TextField emailField;
+	@FXML
+	private TextField usuarioField;
+	@FXML
+	private PasswordField passwordField;
+	@FXML
+	private TextField edadField;
+	@FXML
+	private ComboBox<String> sexoCombo;
+	@FXML
+	private Button registrarBtn;
+	@FXML
+	private ComboBox<String> pregunta1Combo;
+	@FXML
+	private TextField respuesta1Field;
 
-    @FXML
-    private void onRegistrar(ActionEvent event) {
 
-        String email = safeTxt(emailField);
-        String usuario = safeTxt(usuarioField);
-        String pass = safeTxt(passwordField);
-        String edadTxt = safeTxt(edadField);
-        String sexo = sexoCombo.getValue();
+	@FXML
+	public void initialize() {
+		pregunta1Combo.getItems().addAll(
+				"¿Cuál es el nombre de tu primera mascota?", 
+				"¿En qué ciudad naciste?", 
+				"¿Cuál es el segundo nombre de tu madre o padre?",
+				"¿Cuál fue el nombre de tu primer colegio?",
+				"¿Cómo se llamaba tu profesor favorito de la infancia?");
+	}
 
-        // ==========================
-        // Validaciones básicas
-        // ==========================
+	@FXML
+	private void onRegistrar(ActionEvent event) {
 
-        if (email.isEmpty() || usuario.isEmpty() || pass.isEmpty()) {
-            showAlert(Alert.AlertType.WARNING,
-                    "Campos obligatorios",
-                    "Email, usuario y contraseña son obligatorios.");
-            return;
-        }
+		String email = safeTxt(emailField);
+		String usuario = safeTxt(usuarioField);
+		String pass = safeTxt(passwordField);
+		String edadTxt = safeTxt(edadField);
+		String sexo = sexoCombo.getValue();
+		String preguntaSeguridad1 = pregunta1Combo.getValue();
+		String respuesta1 = safeTxt(respuesta1Field);
 
-        if (!email.matches("^[\\w\\.-]+@[\\w\\.-]+\\.[A-Za-z]{2,}$")) {
-            showAlert(Alert.AlertType.WARNING,
-                    "Email inválido",
-                    "Introduce un email con formato válido.");
-            return;
-        }
+		// ==========================
+		// Validaciones básicas
+		// ==========================
 
-        // Validación numérica de edad (opcional)
-        Integer edad = null;
+		if (email.isEmpty() || usuario.isEmpty() || pass.isEmpty() || respuesta1.isEmpty() )  {
+			showAlert(Alert.AlertType.WARNING, "Campos obligatorios", "Email, usuario, contraseña y las preguntas son obligatorios.");
+			return;
+		}
 
-        if (!edadTxt.isEmpty()) {
-            try {
-                edad = Integer.parseInt(edadTxt);
+		if (!email.matches("^[\\w\\.-]+@[\\w\\.-]+\\.[A-Za-z]{2,}$")) {
+			showAlert(Alert.AlertType.WARNING, "Email inválido", "Introduce un email con formato válido.");
+			return;
+		}
 
-                if (edad < 0 || edad > 120) {
-                    showAlert(Alert.AlertType.WARNING,
-                            "Edad inválida",
-                            "Introduce una edad entre 0 y 120.");
-                    return;
-                }
+		// Validación numérica de edad (opcional)
+		Integer edad = null;
 
-            } catch (NumberFormatException ex) {
-                showAlert(Alert.AlertType.WARNING,
-                        "Edad inválida",
-                        "La edad debe ser un número.");
-                return;
-            }
-        }
+		if (!edadTxt.isEmpty()) {
+			try {
+				edad = Integer.parseInt(edadTxt);
 
-        // ==========================
-        // Regla de roles por dominio
-        // ==========================
+				if (edad < 0 || edad > 120) {
+					showAlert(Alert.AlertType.WARNING, "Edad inválida", "Introduce una edad entre 0 y 120.");
+					return;
+				}
 
-        boolean isAdmin =
-                email.toLowerCase().endsWith("@pingme.com") ||
-                email.toLowerCase().endsWith("@pingme.net");
+			} catch (NumberFormatException ex) {
+				showAlert(Alert.AlertType.WARNING, "Edad inválida", "La edad debe ser un número.");
+				return;
+			}
+		}
 
-        // ==========================
-        // Simulación de guardado
-        // ==========================
+		// ==========================
+		// Regla de roles por dominio
+		// ==========================
 
-        showAlert(Alert.AlertType.INFORMATION,
-                "Registro completado",
-                "Usuario registrado correctamente.\n" +
-                        (isAdmin
-                                ? "Se te asignará rol ADMIN por dominio corporativo."
-                                : "Se te asignará rol de usuario estándar."));
+		boolean isAdmin = email.toLowerCase().endsWith("@pingme.com") || email.toLowerCase().endsWith("@pingme.net");
 
-        // Cerrar ventana modal
-        Stage stage = (Stage) registrarBtn.getScene().getWindow();
-        stage.close();
-    }
+		// ==========================
+		// Simulación de guardado
+		// ==========================
 
-    // ------------------------------------------
-    //               UTILIDADES
-    // ------------------------------------------
+		showAlert(Alert.AlertType.INFORMATION, "Registro completado",
+				"Usuario registrado correctamente.\n" + (isAdmin ? "Se te asignará rol ADMIN por dominio corporativo."
+						: "Se te asignará rol de usuario estándar."));
 
-    private String safeTxt(TextInputControl c) {
-        return c.getText() != null ? c.getText().trim() : "";
-    }
+		// Cerrar ventana modal
+		Stage stage = (Stage) registrarBtn.getScene().getWindow();
+		stage.close();
+	}
 
-    private void showAlert(Alert.AlertType type, String header, String message) {
-        Alert alert = new Alert(type);
-        alert.setHeaderText(header);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
+	// ------------------------------------------
+	// UTILIDADES
+	// ------------------------------------------
+
+	private String safeTxt(TextInputControl c) {
+		return c.getText() != null ? c.getText().trim() : "";
+	}
+
+	private void showAlert(Alert.AlertType type, String header, String message) {
+		Alert alert = new Alert(type);
+		alert.setHeaderText(header);
+		alert.setContentText(message);
+		alert.showAndWait();
+	}
 }
