@@ -1,4 +1,4 @@
-
+<?xml version="1.0" encoding="UTF-8"?>
 <?import java.lang.String?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
@@ -18,8 +18,10 @@
             <Region HBox.hgrow="ALWAYS"/>
             <Label fx:id="usuarioLabel" text="Usuario" styleClass="title"/>
             <Region HBox.hgrow="ALWAYS"/>
-            <Button fx:id="logoutBtn" text="Cerrar sesión" onAction="#onLogout" styleClass="primary-btn"/>
+            
+            <Button text="Informe Usuarios" onAction="#onGenerarInforme" styleClass="primary-btn secondary-btn"/>
             <Button text="Tickets" onAction="#onTickets" styleClass="primary-btn secondary-btn"/>
+            <Button fx:id="logoutBtn" text="Cerrar sesión" onAction="#onLogout" styleClass="primary-btn"/>
         </HBox>
     </top>
 
