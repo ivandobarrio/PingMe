@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" 
+              name="informe_usuarios" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7f123456-1234-1234-1234-1234567890ab">
+    
+    <field name="nombreUsuario" class="java.lang.String"/>
+    <field name="emailUsuario" class="java.lang.String"/>
+    <field name="numChats" class="java.lang.Integer"/>
+    <field name="numSalas" class="java.lang.Integer"/>
+    <field name="numTickets" class="java.lang.Integer"/>
+
+    <title>
+        <band height="85">
+            <rectangle>
+                <reportElement x="0" y="0" width="555" height="60" backcolor="#2C3E50" uuid="b123"/>
+                <graphicElement><pen lineWidth="0.0"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="20" y="15" width="300" height="30" forecolor="#FFFFFF" uuid="c123"/>
+                <textElement verticalAlignment="Middle">
+                    <font size="20" isBold="true"/>
+                </textElement>
+                <text><![CDATA[PingMe - Gestión de Usuarios]]></text>
+            </staticText>
+            <textField pattern="EEEEE dd MMMMM yyyy">
+                <reportElement x="400" y="40" width="135" height="20" forecolor="#FFFFFF" uuid="d123"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+
+    <columnHeader>
+        <band height="30">
+            <staticText>
+                <reportElement mode="Opaque" x="0" y="0" width="140" height="30" backcolor="#ECF0F1" uuid="h1"/>
+                <box><pen lineWidth="0.5" lineColor="#BDC3C7"/></box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Nombre de Usuario]]></text>
+            </staticText>
+            <staticText>
+                <reportElement mode="Opaque" x="140" y="0" width="175" height="30" backcolor="#ECF0F1" uuid="h2"/>
+                <box><pen lineWidth="0.5" lineColor="#BDC3C7"/></box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Correo Electrónico]]></text>
+            </staticText>
+            <staticText>
+                <reportElement mode="Opaque" x="315" y="0" width="80" height="30" backcolor="#ECF0F1" uuid="h3"/>
+                <box><pen lineWidth="0.5" lineColor="#BDC3C7"/></box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Nº Chats]]></text>
+            </staticText>
+            <staticText>
+                <reportElement mode="Opaque" x="395" y="0" width="80" height="30" backcolor="#ECF0F1" uuid="h4"/>
+                <box><pen lineWidth="0.5" lineColor="#BDC3C7"/></box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Nº Salas]]></text>
+            </staticText>
+            <staticText>
+                <reportElement mode="Opaque" x="475" y="0" width="80" height="30" backcolor="#ECF0F1" uuid="h5"/>
+                <box><pen lineWidth="0.5" lineColor="#BDC3C7"/></box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Nº Tickets]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="25">
+            <textField>
+                <reportElement x="0" y="0" width="140" height="25" uuid="d1"/>
+                <box leftPadding="5"><pen lineWidth="0.25" lineColor="#DCDCDC"/></box>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{nombreUsuario}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="140" y="0" width="175" height="25" uuid="d2"/>
+                <box leftPadding="5"><pen lineWidth="0.25" lineColor="#DCDCDC"/></box>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{emailUsuario}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="315" y="0" width="80" height="25" uuid="d3"/>
+                <box><pen lineWidth="0.25" lineColor="#DCDCDC"/></box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{numChats}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="395" y="0" width="80" height="25" uuid="d4"/>
+                <box><pen lineWidth="0.25" lineColor="#DCDCDC"/></box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{numSalas}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="475" y="0" width="80" height="25" uuid="d5"/>
+                <box><pen lineWidth="0.25" lineColor="#DCDCDC"/></box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{numTickets}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <pageFooter>
+        <band height="30">
+            <textField>
+                <reportElement x="435" y="10" width="80" height="20" uuid="f1"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+            </textField>
+            <textField evaluationTime="Report">
+                <reportElement x="515" y="10" width="40" height="20" uuid="f2"/>
+                <textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+</jasperReport>
