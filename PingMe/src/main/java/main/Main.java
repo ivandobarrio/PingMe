@@ -1,3 +1,4 @@
+
 package main;
 
 import javafx.application.Application;
@@ -30,6 +31,8 @@ public class Main extends Application {
         Scene scene = new Scene(root);
 
         primaryStage.setTitle("PingMe - Login");
+        scene.getStylesheets().add(getClass().getResource("/frontend/styles.css").toExternalForm());
+
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.centerOnScreen();
