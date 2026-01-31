@@ -14,7 +14,7 @@ public class TcpConexionBasicaClient {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String ip = "172.20.10.5";
+		String ip = "127.0.0.1";
 		int puerto = 5000;
 
 

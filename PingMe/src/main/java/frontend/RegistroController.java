@@ -1,10 +1,12 @@
 
 package frontend;
 
+import entidades.Usuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import services.UsuarioService;
 
 public class RegistroController {
 
@@ -25,14 +27,10 @@ public class RegistroController {
 	@FXML
 	private TextField respuesta1Field;
 
-
 	@FXML
 	public void initialize() {
-		pregunta1Combo.getItems().addAll(
-				"¿Cuál es el nombre de tu primera mascota?", 
-				"¿En qué ciudad naciste?", 
-				"¿Cuál es el segundo nombre de tu madre o padre?",
-				"¿Cuál fue el nombre de tu primer colegio?",
+		pregunta1Combo.getItems().addAll("¿Cuál es el nombre de tu primera mascota?", "¿En qué ciudad naciste?",
+				"¿Cuál es el segundo nombre de tu madre o padre?", "¿Cuál fue el nombre de tu primer colegio?",
 				"¿Cómo se llamaba tu profesor favorito de la infancia?");
 	}
 
@@ -51,8 +49,9 @@ public class RegistroController {
 		// Validaciones básicas
 		// ==========================
 
-		if (email.isEmpty() || usuario.isEmpty() || pass.isEmpty() || respuesta1.isEmpty() )  {
-			showAlert(Alert.AlertType.WARNING, "Campos obligatorios", "Email, usuario, contraseña y las preguntas son obligatorios.");
+		if (email.isEmpty() || usuario.isEmpty() || pass.isEmpty() || respuesta1.isEmpty()) {
+			showAlert(Alert.AlertType.WARNING, "Campos obligatorios",
+					"Email, usuario, contraseña y las preguntas son obligatorios.");
 			return;
 		}
 
@@ -79,24 +78,54 @@ public class RegistroController {
 			}
 		}
 
-		// ==========================
-		// Regla de roles por dominio
-		// ==========================
+		try {
+			UsuarioService usuarioService = new UsuarioService();
 
-		boolean isAdmin = email.toLowerCase().endsWith("@pingme.com") || email.toLowerCase().endsWith("@pingme.net");
+			Usuario u = new Usuario(usuario);
+			u.setEmail(email);
+			u.setContraseña(pass); 
+			u.setSexo(sexo != null ? sexo : "");
+			u.setEdad(edad != null ? edad : 21);
+			u.setPregunta(preguntaSeguridad1);
+			u.setRespuesta(respuesta1);
 
-		// ==========================
-		// Simulación de guardado
-		// ==========================
+			usuarioService.crearUsuario(u);
 
-		showAlert(Alert.AlertType.INFORMATION, "Registro completado",
-				"Usuario registrado correctamente.\n" + (isAdmin ? "Se te asignará rol ADMIN por dominio corporativo."
-						: "Se te asignará rol de usuario estándar."));
+			showAlert(Alert.AlertType.INFORMATION, "Registro completado",
+					"Usuario registrado correctamente. Ya puedes iniciar sesión.");
 
-		// Cerrar ventana modal
-		Stage stage = (Stage) registrarBtn.getScene().getWindow();
-		stage.close();
+			// Cerrar ventana modal
+			Stage stage = (Stage) registrarBtn.getScene().getWindow();
+			stage.close();
+
+		} catch (IllegalStateException dup) {
+			// Email duplicado
+			showAlert(Alert.AlertType.WARNING, "Email duplicado", dup.getMessage());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			showAlert(Alert.AlertType.ERROR, "Error", "No se pudo registrar el usuario.\n" + ex.getMessage());
+		}
 	}
+
+	/*
+	 * // ========================== // Regla de roles por dominio //
+	 * ==========================
+	 * 
+	 * boolean isAdmin = email.toLowerCase().endsWith("@pingme.com") ||
+	 * email.toLowerCase().endsWith("@pingme.net");
+	 * 
+	 * // ========================== // Simulación de guardado //
+	 * ==========================
+	 * 
+	 * showAlert(Alert.AlertType.INFORMATION, "Registro completado",
+	 * "Usuario registrado correctamente.\n" + (isAdmin ?
+	 * "Se te asignará rol ADMIN por dominio corporativo." :
+	 * "Se te asignará rol de usuario estándar."));
+	 * 
+	 * // Cerrar ventana modal Stage stage = (Stage)
+	 * registrarBtn.getScene().getWindow(); stage.close();
+	 */
+	
 
 	// ------------------------------------------
 	// UTILIDADES

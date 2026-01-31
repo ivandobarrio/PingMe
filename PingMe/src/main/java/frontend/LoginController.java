@@ -11,137 +11,179 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import services.UsuarioService;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import entidades.Usuario;
+
 public class LoginController {
 
-    // --- Elementos del FXML ---
-    @FXML private TextField usuarioField;
-    @FXML private PasswordField passwordField;
-    @FXML private Button loginBtn;
-    @FXML private Button forgotBtn;
-    @FXML private Button registerBtn;
+	// --- Elementos del FXML ---
+	@FXML
+	private TextField usuarioField;
+	@FXML
+	private PasswordField passwordField;
+	@FXML
+	private Button loginBtn;
+	@FXML
+	private Button forgotBtn;
+	@FXML
+	private Button registerBtn;
 
-    // =============================================================
-    //   CREDENCIALES DE PRUEBA (Para testear el Frontend)
-    // =============================================================
-    private static final String ADMIN_USER = "admin";
-    private static final String ADMIN_PASS = "admin123";
+	// =============================================================
+	// CREDENCIALES DE PRUEBA (Para testear el Frontend)
+	// =============================================================
+	private static final String ADMIN_USER = "admin";
+	private static final String ADMIN_PASS = "admin123";
 
-    private static final String NORMAL_USER = "user";
-    private static final String NORMAL_PASS = "user123";
-    // =============================================================
+	private static final String NORMAL_USER = "user";
+	private static final String NORMAL_PASS = "user123";
+	// =============================================================
 
-    @FXML
-    private void onLogin(ActionEvent event) {
-        String usuario = usuarioField.getText() != null ? usuarioField.getText().trim() : "";
-        String pass = passwordField.getText() != null ? passwordField.getText().trim() : "";
+	@FXML
+	private void onLogin(ActionEvent event) {
+		String usuario = usuarioField.getText() != null ? usuarioField.getText().trim() : "";
+		String pass = passwordField.getText() != null ? passwordField.getText().trim() : "";
 
-        // 1. Validar que no estén vacíos
-        if (usuario.isEmpty() || pass.isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Campos requeridos", "Por favor, introduce usuario y contraseña.");
-            return;
-        }
+		// 1. Validar que no estén vacíos
+		if (usuario.isEmpty() || pass.isEmpty()) {
+			showAlert(Alert.AlertType.WARNING, "Campos requeridos", "Por favor, introduce usuario y contraseña.");
+			return;
+		}
 
-        // 2. Comprobar credenciales
-        boolean esAdmin = usuario.equals(ADMIN_USER) && pass.equals(ADMIN_PASS);
-        boolean esUser = usuario.equals(NORMAL_USER) && pass.equals(NORMAL_PASS);
+		try {
+			UsuarioService usuarioService = new UsuarioService();
+			Usuario u = usuarioService.validarLogin(usuario, pass);
 
-        if (!esAdmin && !esUser) {
-            showAlert(Alert.AlertType.ERROR, "Acceso denegado", "Usuario o contraseña incorrectos.\n\nPrueba con:\nadmin / admin123\nuser / user123");
-            return;
-        }
+			if (u == null) {
+				showAlert(Alert.AlertType.ERROR, "Acceso denegado", "Usuario/email o contraseña incorrectos.");
+				return;
+			}
 
-        // 3. Crear sesión básica
-        Map<String, Object> session = new HashMap<>();
-        session.put("username", usuario);
-        session.put("isAdmin", esAdmin); // Guardamos si es admin o no
+			// Regla simple para admin: dominio corporativo (igual que comentaste)
+			boolean esAdmin = u.getEmail() != null && (u.getEmail().toLowerCase().endsWith("@pingme.com")
+					|| u.getEmail().toLowerCase().endsWith("@pingme.net"));
 
-        // 4. Redirigir según el tipo de usuario
-        if (esAdmin) {
-            System.out.println(">> Iniciando como ADMINISTRADOR");
-            goTo("/frontend/PantallaInicioAdmin.fxml", controller -> {
-                if (controller instanceof AdminTicketsController) {
-                    ((AdminTicketsController) controller).initSession(session);
-                }
-            });
+			// Sesión
+			Map<String, Object> session = new HashMap<>();
+			session.put("username", u.getNombre());
+			session.put("email", u.getEmail());
+			session.put("isAdmin", esAdmin);
 
-        } else {
-            System.out.println(">> Iniciando como USUARIO NORMAL");
-            goTo("/frontend/PantallaInicio.fxml", controller -> {
-                if (controller instanceof PantallaInicio) {
-                    ((PantallaInicio) controller).initSession(session);
-                }
-            });
-        }
-    }
+			// Navegación
+			if (esAdmin) {
+				goTo("/frontend/PantallaInicioAdmin.fxml", controller -> {
+					if (controller instanceof AdminTicketsController) {
+						((AdminTicketsController) controller).initSession(session);
+					}
+				});
+			} else {
+				goTo("/frontend/PantallaInicio.fxml", controller -> {
+					if (controller instanceof PantallaInicio) {
+						((PantallaInicio) controller).initSession(session);
+					}
+				});
+			}
 
-    // ===========================================
-    //           OTRAS ACCIONES
-    // ===========================================
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			showAlert(Alert.AlertType.ERROR, "Error", "No se pudo validar el inicio de sesión.\n" + ex.getMessage());
+		}
+	}
 
-    @FXML
-    private void onForgot(ActionEvent event) {
-        openModal("/frontend/PantallaRecuperarContraseña.fxml", "Recuperar contraseña");
-    }
+	/*
+	 * // 2. Comprobar credenciales boolean esAdmin = usuario.equals(ADMIN_USER) &&
+	 * pass.equals(ADMIN_PASS); boolean esUser = usuario.equals(NORMAL_USER) &&
+	 * pass.equals(NORMAL_PASS);
+	 * 
+	 * if (!esAdmin && !esUser) { showAlert(Alert.AlertType.ERROR,
+	 * "Acceso denegado",
+	 * "Usuario o contraseña incorrectos.\n\nPrueba con:\nadmin / admin123\nuser / user123"
+	 * ); return; }
+	 * 
+	 * // 3. Crear sesión básica Map<String, Object> session = new HashMap<>();
+	 * session.put("username", usuario); session.put("isAdmin", esAdmin); //
+	 * Guardamos si es admin o no
+	 * 
+	 * // 4. Redirigir según el tipo de usuario if (esAdmin) {
+	 * System.out.println(">> Iniciando como ADMINISTRADOR");
+	 * goTo("/frontend/PantallaInicioAdmin.fxml", controller -> { if (controller
+	 * instanceof AdminTicketsController) { ((AdminTicketsController)
+	 * controller).initSession(session); } });
+	 * 
+	 * } else { System.out.println(">> Iniciando como USUARIO NORMAL");
+	 * goTo("/frontend/PantallaInicio.fxml", controller -> { if (controller
+	 * instanceof PantallaInicio) { ((PantallaInicio)
+	 * controller).initSession(session); } }); } }
+	 */
 
-    @FXML
-    private void onRegister(ActionEvent event) {
-        goTo("/frontend/PantallaRegistro.fxml", null);
-    }
+	// ===========================================
+	// OTRAS ACCIONES
+	// ===========================================
 
-    // ===========================================
-    //           UTILIDADES DE NAVEGACIÓN
-    // ===========================================
+	@FXML
+	private void onForgot(ActionEvent event) {
+		openModal("/frontend/PantallaRecuperarContraseña.fxml", "Recuperar contraseña");
+	}
 
-    private void goTo(String fxmlPath, Consumer<Object> controllerConsumer) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
+	@FXML
+	private void onRegister(ActionEvent event) {
+		goTo("/frontend/PantallaRegistro.fxml", null);
+	}
 
-            if (controllerConsumer != null) {
-                Object controller = loader.getController();
-                controllerConsumer.accept(controller);
-            }
+	// ===========================================
+	// UTILIDADES DE NAVEGACIÓN
+	// ===========================================
 
-            Stage stage = (Stage) loginBtn.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
-            stage.show();
+	private void goTo(String fxmlPath, Consumer<Object> controllerConsumer) {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+			Parent root = loader.load();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Error de navegación", "No se pudo cargar la pantalla: " + fxmlPath + "\nVerifica que el archivo existe y el controller está bien asignado.");
-        }
-    }
+			if (controllerConsumer != null) {
+				Object controller = loader.getController();
+				controllerConsumer.accept(controller);
+			}
 
-    private void openModal(String fxmlPath, String title) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
+			Stage stage = (Stage) loginBtn.getScene().getWindow();
+			stage.setScene(new Scene(root));
+			stage.centerOnScreen();
+			stage.show();
 
-            Stage modal = new Stage();
-            modal.initOwner((Stage) loginBtn.getScene().getWindow());
-            modal.initModality(Modality.APPLICATION_MODAL);
-            modal.setTitle(title);
-            modal.setScene(new Scene(root));
-            modal.centerOnScreen();
-            modal.showAndWait();
+		} catch (IOException e) {
+			e.printStackTrace();
+			showAlert(Alert.AlertType.ERROR, "Error de navegación", "No se pudo cargar la pantalla: " + fxmlPath
+					+ "\nVerifica que el archivo existe y el controller está bien asignado.");
+		}
+	}
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Error", "No se pudo abrir la ventana: " + fxmlPath);
-        }
-    }
+	private void openModal(String fxmlPath, String title) {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+			Parent root = loader.load();
 
-    private void showAlert(Alert.AlertType type, String header, String content) {
-        Alert alert = new Alert(type);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
+			Stage modal = new Stage();
+			modal.initOwner((Stage) loginBtn.getScene().getWindow());
+			modal.initModality(Modality.APPLICATION_MODAL);
+			modal.setTitle(title);
+			modal.setScene(new Scene(root));
+			modal.centerOnScreen();
+			modal.showAndWait();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			showAlert(Alert.AlertType.ERROR, "Error", "No se pudo abrir la ventana: " + fxmlPath);
+		}
+	}
+
+	private void showAlert(Alert.AlertType type, String header, String content) {
+		Alert alert = new Alert(type);
+		alert.setHeaderText(header);
+		alert.setContentText(content);
+		alert.showAndWait();
+	}
 }

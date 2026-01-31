@@ -22,7 +22,7 @@ public class Usuario implements Serializable {
 
     // Evitamos 'ñ' en el nombre físico de la columna
     @Column(name = "contrasena", nullable = false, length = 255)
-    private String contraseña;
+    private String contrasena;
 
     @Column(name = "email", nullable = false, length = 180)
     private String email;
@@ -47,7 +47,7 @@ public class Usuario implements Serializable {
     public Usuario(Long id, String nombre, String contraseña, String email, String sexo, int edad, String pregunta, String respuesta) {
         this.id = id;
         this.nombre = nombre;
-        this.contraseña = contraseña;
+        this.contrasena = contraseña;
         this.email = email;
         this.sexo = sexo;
         this.edad = edad;
@@ -57,7 +57,7 @@ public class Usuario implements Serializable {
 
     public Usuario(String nombre) {
         this.nombre = nombre;
-        this.contraseña = "";
+        this.contrasena = "";
         this.sexo = "";
         this.edad = 21;
     }
@@ -69,8 +69,8 @@ public class Usuario implements Serializable {
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getContraseña() { return contraseña; }
-    public void setContraseña(String contraseña) { this.contraseña = contraseña; }
+    public String getContraseña() { return contrasena; }
+    public void setContraseña(String contraseña) { this.contrasena = contraseña; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
@@ -89,7 +89,7 @@ public class Usuario implements Serializable {
 
     @Override
 	public String toString() {
-		return "Usuario [id=" + id + ", nombre=" + nombre + ", contraseña=" + contraseña + ", email=" + email
+		return "Usuario [id=" + id + ", nombre=" + nombre + ", contraseña=" + contrasena + ", email=" + email
 				+ ", sexo=" + sexo + ", edad=" + edad + ", pregunta=" + pregunta + ", respuesta=" + respuesta + "]";
 	}
 

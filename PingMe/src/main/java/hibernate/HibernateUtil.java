@@ -5,6 +5,8 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
+import entidades.Mensaje;
+import entidades.Sala;
 import entidades.Usuario;
 
 public class HibernateUtil {
@@ -23,6 +25,8 @@ public class HibernateUtil {
 						configuration.configure("hibernate.cfg.xml");
 
 						configuration.addAnnotatedClass(Usuario.class);
+						configuration.addAnnotatedClass(Mensaje.class);
+						configuration.addAnnotatedClass(Sala.class);
 
 						ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
 								.applySettings(configuration.getProperties()).build();
