@@ -17,7 +17,8 @@ public class MensajeService {
 		return dao.obtenerConversacionDM(a, b);
 	}
 
-	public List<Mensaje> historialSala(String sala) {
-		return dao.obtenerPorReceptor(sala);
+	public List<Mensaje> historialSala(String nombreSala) {
+		return dao.obtenerPorReceptor(nombreSala); // si guardas receptor=nombreSala
 	}
+
 }

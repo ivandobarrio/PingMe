@@ -30,15 +30,15 @@ public class MensajeDAO {
 			e.printStackTrace();
 		}
 	}
-	
-	//SELECCIONAR MENSAJE POR ID
+
+	// SELECCIONAR MENSAJE POR ID
 	public Mensaje obtenerPorId(Long id) {
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 			return session.get(Mensaje.class, id);
 		}
 	}
 
-	//OBTENER TODOS LOS MENSAJES
+	// OBTENER TODOS LOS MENSAJES
 	public List<Mensaje> obtenerTodos() {
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 			return session.createQuery("FROM Mensaje ORDER BY fecha ASC", Mensaje.class).list();
@@ -120,7 +120,6 @@ public class MensajeDAO {
 		}
 	}
 
-
 	// DELETE UNA CONVERSACION ENTRE DOS USUARIOS
 	public int eliminarConversacionDM(String idUsuarioA, String idUsuarioB) {
 		Transaction tx = null;
@@ -141,7 +140,6 @@ public class MensajeDAO {
 		}
 	}
 
-
 	// DELETE MENSAJE USUARIO (YA SEA EMISOR O RECEPTOR)
 	public int eliminarTodosDeUsuario(String idUsuario) {
 		Transaction tx = null;
@@ -159,4 +157,13 @@ public class MensajeDAO {
 			return 0;
 		}
 	}
+
+	public List<Mensaje> obtenerHistorialSala(String nombreSala) {
+		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+			var q = session.createQuery("FROM Mensaje WHERE idReceptor = :sala ORDER BY fecha ASC", Mensaje.class);
+			q.setParameter("sala", nombreSala);
+			return q.list();
+		}
+	}
+
 }

@@ -6,97 +6,128 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import entidades.ConversacionDTO;
+import entidades.CredencialesDTO;
 import entidades.Mensaje;
 import entidades.ServerPeticion;
 import entidades.ServerRespuesta;
+import entidades.Usuario;
 import services.MensajeService;
 import services.SalaService;
 import services.UsuarioService;
 
 public class ClientHandler implements Runnable {
-	private Socket cliente;
+	private final Socket cliente;
+	private ObjectInputStream input;
+	private ObjectOutputStream output;
 	private final UsuarioService usuarioService = new UsuarioService();
 	private final MensajeService mensajeService = new MensajeService();
-	private final SalaService salaService = new SalaService();
+	private String username;
 
 	public ClientHandler(Socket cliente) {
 		this.cliente = cliente;
-
 	}
 
 	@Override
 	public void run() {
 		try {
 			// LEER MENSAJES CLIENTE
-			ObjectOutputStream output = new ObjectOutputStream(cliente.getOutputStream());
-			ObjectInputStream input = new ObjectInputStream(cliente.getInputStream());
-
+			output = new ObjectOutputStream(cliente.getOutputStream());
 			output.flush();
+			input = new ObjectInputStream(cliente.getInputStream());
+
 			System.out.println("Handler listo para cliente: " + cliente.getInetAddress());
 
-			while (true) {
-				ServerPeticion peticion = (ServerPeticion) input.readObject();
-				ServerRespuesta respuesta;
-				try {
-					switch (peticion.getComando()) {
+			while (!cliente.isClosed()) {
+				Object obj = input.readObject();
+				if (!(obj instanceof ServerPeticion))
+					continue;
 
-					case LISTAR_USUARIOS:
-						respuesta = new ServerRespuesta(0, "OK", usuarioService.listarTodos());
-						break;
-
-					case ENVIAR_MENSAJE_CHAT:
-						mensajeService.enviar((Mensaje) peticion.getContenido());
-						respuesta = new ServerRespuesta(0, "Mensaje guardado", null);
-						break;
-
-					case ENVIAR_MENSAJE_SALA:
-						mensajeService.enviar((Mensaje) peticion.getContenido());
-						respuesta = new ServerRespuesta(0, "Mensaje guardado", null);
-						break;
-
-					case OBTENER_HISTORIAL:
-						ConversacionDTO dto = (ConversacionDTO) peticion.getContenido();
-						if (dto.tipo.equals("dm"))
-							respuesta = new ServerRespuesta(0, "Historial DM",
-									mensajeService.historialDM(dto.a, dto.b));
-						else
-							respuesta = new ServerRespuesta(0, "Historial Sala", mensajeService.historialSala(dto.a));
-						break;
-
-					case FIN:
-						respuesta = new ServerRespuesta(0, "FIN", null);
-						output.writeObject(respuesta);
-						output.flush();
-						return;
-
-					default:
-						respuesta = new ServerRespuesta(1, "ERROR: comando not exist", null);
-						break;
+				ServerPeticion req = (ServerPeticion) obj;
+				switch (req.getComando()) {
+				case INICIAR_SESION: {
+					// contenido: DTO simple con usuario/email y password, o un Map
+					CredencialesDTO cred = (CredencialesDTO) req.getContenido();
+					Usuario u = usuarioService.validarLogin(cred.usuarioOEmail, cred.contrasena);
+					if (u != null) {
+						username = u.getNombre();
+						ConnectionHub.register(username, this);
+						sendSync(new ServerRespuesta(0, "LOGIN_OK", u));
+					} else {
+						sendSync(new ServerRespuesta(2, "LOGIN_FAIL", null));
 					}
-				} catch (Exception e) {
-					// TODO: handle exception
-					respuesta = new ServerRespuesta(1, "ERROR: error generico", null);
-					System.out.println("Error: " + e.getMessage());
+					break;
 				}
+				case ENVIAR_MENSAJE_CHAT: {
+					Mensaje m = (Mensaje) req.getContenido();
+					// Persistir
+					mensajeService.enviar(m);
+					// ACK al emisor
+					sendSync(new ServerRespuesta(0, "MSG_SENT", null));
+					// Push al receptor (si está online)
+					ServerRespuesta push = new ServerRespuesta(0, "EVENT_RECIBIR_MENSAJE", m);
+					ConnectionHub.sendToUser(m.getIdReceptor(), push);
+					break;
+				}
+				case OBTENER_HISTORIAL: {
 
-				output.reset();
-				output.writeObject(respuesta);
-				output.flush();
+					ConversacionDTO dto = (ConversacionDTO) req.getContenido();
+					if ("dm".equalsIgnoreCase(dto.tipo)) {
+						var historial = mensajeService.historialDM(dto.a, dto.b);
+						sendSync(new ServerRespuesta(0, "HISTORIAL_DM", historial));
+					} else if ("sala".equalsIgnoreCase(dto.tipo)) {
+						var historialSala = mensajeService.historialSala(dto.b); // receptor = nombreSala
+						sendSync(new ServerRespuesta(0, "HISTORIAL_SALA", historialSala));
+					} else {
+						sendSync(new ServerRespuesta(2, "TIPO_CONVERSACION_DESCONOCIDO", null));
+					}
+					break;
 
+				}
+				case FIN: {
+					sendSync(new ServerRespuesta(0, "FIN", null));
+					close();
+					return;
+				}
+				default:
+					sendSync(new ServerRespuesta(1, "CMD_NOT_SUPPORTED", null));
+				}
 			}
 
 		} catch (Exception e) {
-			// TODO: handle exception
-			System.err.println("Error con el cliente " + cliente.getInetAddress() + ": " + e.getMessage());
-		}
-
-		try {
-			System.err.println("Desconectando al cliente " + cliente.getInetAddress());
-			cliente.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// client dropped
+		} finally {
+			ConnectionHub.unregister(username);
+			close();
 		}
 	}
 
+	public synchronized void sendAsync(Object payload) {
+		try {
+			output.writeObject(payload);
+			output.flush();
+		} catch (IOException ignored) {
+		}
+	}
+
+	private void sendSync(Object payload) throws IOException {
+		output.writeObject(payload);
+		output.flush();
+	}
+
+	private void close() {
+		try {
+			if (input != null)
+				input.close();
+		} catch (Exception ignored) {
+		}
+		try {
+			if (output != null)
+				output.close();
+		} catch (Exception ignored) {
+		}
+		try {
+			cliente.close();
+		} catch (Exception ignored) {
+		}
+	}
 }

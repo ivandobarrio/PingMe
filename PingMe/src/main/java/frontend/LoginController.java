@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import conexionFrontend.ChatClient;
 import entidades.Usuario;
 
 public class LoginController {
@@ -56,42 +57,27 @@ public class LoginController {
 		}
 
 		try {
-			UsuarioService usuarioService = new UsuarioService();
-			Usuario u = usuarioService.validarLogin(usuario, pass);
-
-			if (u == null) {
+			ChatClient chat = new ChatClient("127.0.0.1", 5000);
+			boolean ok = chat.conectarYLoguear(usuario, pass);
+			if (!ok) {
 				showAlert(Alert.AlertType.ERROR, "Acceso denegado", "Usuario/email o contraseña incorrectos.");
 				return;
 			}
 
-			// Regla simple para admin: dominio corporativo (igual que comentaste)
-			boolean esAdmin = u.getEmail() != null && (u.getEmail().toLowerCase().endsWith("@pingme.com")
-					|| u.getEmail().toLowerCase().endsWith("@pingme.net"));
-
-			// Sesión
 			Map<String, Object> session = new HashMap<>();
-			session.put("username", u.getNombre());
-			session.put("email", u.getEmail());
-			session.put("isAdmin", esAdmin);
+			session.put("username", usuario); // o el nombre real del Usuario devuelto
+			session.put("chatClient", chat);
 
-			// Navegación
-			if (esAdmin) {
-				goTo("/frontend/PantallaInicioAdmin.fxml", controller -> {
-					if (controller instanceof AdminTicketsController) {
-						((AdminTicketsController) controller).initSession(session);
-					}
-				});
-			} else {
-				goTo("/frontend/PantallaInicio.fxml", controller -> {
-					if (controller instanceof PantallaInicio) {
-						((PantallaInicio) controller).initSession(session);
-					}
-				});
-			}
+			goTo("/frontend/PantallaInicio.fxml", controller -> {
+				if (controller instanceof PantallaInicio) {
+					((PantallaInicio) controller).initSession(session);
+				}
+			});
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			showAlert(Alert.AlertType.ERROR, "Error", "No se pudo validar el inicio de sesión.\n" + ex.getMessage());
+
+			showAlert(Alert.AlertType.ERROR, "Error", "No se pudo conectar con el servidor.");
 		}
 	}
 

@@ -23,11 +23,22 @@ public class TcpConexionBasicaServer {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		int puerto = 5000;
+		int puerto = 5001;
+		ServerSocket server = null;
 
 		try {
 			System.out.println("Iniciando el servidor...");
-			ServerSocket server = new ServerSocket(puerto);
+			server = new ServerSocket(puerto);
+
+			ServerSocket finalServer = server;
+			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+				try {
+					if (!finalServer.isClosed())
+						finalServer.close();
+					System.out.println("Servidor cerrado.");
+				} catch (Exception ignored) {
+				}
+			}));
 
 			System.out.println("Esperando la conexion del cliente");
 			Socket cliente = server.accept();
