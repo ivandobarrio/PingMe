@@ -48,7 +48,7 @@ public class UsuarioService {
 		}
 		if (u == null)
 			return null;
-		
+
 		if (contrasena.equals(u.getContraseña())) {
 			return u;
 		}
@@ -67,4 +67,11 @@ public class UsuarioService {
 		dao.eliminarPorId(id);
 	}
 
+	public boolean validarRespuestaSeguridad(Usuario u, String respuesta) {
+		if (u == null || u.getRespuesta() == null)
+			return false;
+		if (respuesta == null)
+			return false;
+		return u.getRespuesta().trim().equalsIgnoreCase(respuesta.trim());
+	}
 }

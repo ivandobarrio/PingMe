@@ -4,14 +4,22 @@ package frontend;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import services.UsuarioService;
 
 import java.util.Optional;
 import java.util.Properties;
 
+import entidades.Usuario;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
@@ -33,7 +41,6 @@ public class RecuperarContraseñaController {
 	@FXML
 	private void onRecuperar(ActionEvent event) throws AddressException, MessagingException {
 		String emailUser = emailField.getText() != null ? emailField.getText().trim() : "";
-		String prueba = "janiremla@gmail.com";
 
 		if (emailUser.isEmpty()) {
 			showAlert(Alert.AlertType.WARNING, "Campo requerido", "Introduce tu email.");
@@ -45,89 +52,94 @@ public class RecuperarContraseñaController {
 			return;
 		}
 
-		if (!emailUser.equals(prueba)) {
-			showAlert(Alert.AlertType.WARNING, "Email invalido", "Introduce un email ya registrado.");
-			return;
+		try {
+			UsuarioService usuarioService = new UsuarioService();
+			Usuario u = usuarioService.obtenerPorEmail(emailUser);
 
-		} else {
-
-			// Pregunta de seguridad 1
-			TextInputDialog d1 = new TextInputDialog();
-			d1.setTitle("Validación de usuario");
-			d1.setHeaderText("Pregunta seguridad 1");
-			Optional<String> r1 = d1.showAndWait();
-
-			if (!r1.isPresent() || r1.get().trim().isEmpty()) {
-				showAlert(Alert.AlertType.INFORMATION, "Cancelado", "Operación cancelada.");
+			if (u == null) {
+				showAlert(Alert.AlertType.WARNING, "No encontrado", "No existe un usuario con ese email.");
 				return;
 			}
-			String resp1 = r1.get().trim();
 
-			// Pregunta de seguridad 2
-			TextInputDialog d2 = new TextInputDialog();
-			d2.setTitle("Validación de usuario");
-			d2.setHeaderText("Pregunta seguridad 2");
-			Optional<String> r2 = d2.showAndWait();
+			// 1) Mostrar la PREGUNTA DE SEGURIDAD desde la BD
+			String pregunta = (u.getPregunta() != null && !u.getPregunta().isBlank()) ? u.getPregunta()
+					: "Pregunta de seguridad";
 
-			if (!r2.isPresent() || r2.get().trim().isEmpty()) {
-				showAlert(Alert.AlertType.INFORMATION, "Cancelado", "Operación cancelada.");
+			TextInputDialog dPregunta = new TextInputDialog();
+			dPregunta.setTitle("Validación de usuario");
+			dPregunta.setHeaderText(pregunta);
+			dPregunta.setContentText("Respuesta:");
+			Optional<String> r = dPregunta.showAndWait();
+
+			if (r.isEmpty() || r.get().trim().isEmpty()) {
+				showInfo("Cancelado", "Operación cancelada.");
 				return;
 			}
-			String resp2 = r2.get().trim();
 
-			// Valida respuestas (ajusta a la BD)
-			boolean ok = "janire".equalsIgnoreCase(resp1) && "janire".equalsIgnoreCase(resp2);
+			String respuestaIntroducida = r.get().trim();
+			boolean ok = usuarioService.validarRespuestaSeguridad(u, respuestaIntroducida);
 			if (!ok) {
-				showAlert(Alert.AlertType.ERROR, "Respuestas incorrectas", "Alguna de las respuestas no coincide.");
+				showAlert(Alert.AlertType.ERROR, "Respuesta incorrecta", "La respuesta no coincide.");
 				return;
 			}
 
-			// ENVIAR CORREO
-			// 1) Propiedades SMTP
-			Properties props = new Properties();
-			props.put("mail.transport.protocol", "smtp");
-			props.put("mail.smtp.host", "smtp.gmail.com");
-			props.put("mail.smtp.port", "587");
-			props.put("mail.smtp.auth", "true");
-			props.put("mail.smtp.starttls.enable", "true"); // STARTTLS
+			// 3) Enviar por correo la contraseña actual de la BD
+			enviarContrasenaPorEmail(emailUser, u.getContraseña());
 
-			// 2) Session
-			jakarta.mail.Session session = Session.getInstance(props);
+			showInfo("Correo enviado", "Se envió tu contraseña al email indicado.");
 
-			// 3) Message
-			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(ADMIN));
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailUser));
-			message.setSubject("Contraseña PingMe");
-			message.setText("Aqui iria la contraseña del usuario"); // Poner la contraseña del usaurio desde la base de
-																	// datos
+			// 4) Cerrar la ventana
+			Stage stage = (Stage) recuperarBtn.getScene().getWindow();
+			stage.close();
 
-			// 4) Conexión + envío
-			Transport transport = session.getTransport();
-			try {
-				transport.connect("smtp.gmail.com", ADMIN, PASSWORD);
-				transport.sendMessage(message, message.getAllRecipients());
-				System.out.println("Email enviado correctamente.");
-				showAlert(Alert.AlertType.INFORMATION, "Email enviado correctamente",
-						"Mire su correo eletronico introducido.");
-			} finally {
-				// 5) Cerrar
-				transport.close();
-			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			showAlert(Alert.AlertType.ERROR, "Error", "No se pudo completar la operación.\n" + ex.getMessage());
 		}
-
-		// Cierra la ventana modal
-		Stage stage = (Stage) recuperarBtn.getScene().getWindow();
-		stage.close();
 	}
 
-	// ---------------------------------------------
-	// UTILIDAD
-	// ---------------------------------------------
+	// Envío de email con la contraseña
+	private void enviarContrasenaPorEmail(String emailDestino, String contrasenaActual) throws Exception {
+		Properties props = new Properties();
+		props.put("mail.transport.protocol", "smtp");
+		props.put("mail.smtp.host", "smtp.gmail.com");
+		props.put("mail.smtp.port", "587");
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+
+		jakarta.mail.Session session = jakarta.mail.Session.getInstance(props);
+
+		Message message = new MimeMessage(session);
+		message.setFrom(new InternetAddress(ADMIN));
+		message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailDestino));
+		message.setSubject("Recuperación de contraseña - PingMe");
+
+		String cuerpo = "Hola,\n\n" + "Has solicitado recuperar tu contraseña.\n\n" + "Tu contraseña actual es: "
+				+ contrasenaActual + "\n\n" + "Por seguridad, te recomendamos cambiarla después de iniciar sesión.\n\n"
+				+ "Un saludo,\nPingMe";
+		message.setText(cuerpo);
+
+		Transport transport = session.getTransport();
+		try {
+			transport.connect("smtp.gmail.com", ADMIN, PASSWORD);
+			transport.sendMessage(message, message.getAllRecipients());
+		} finally {
+			transport.close();
+		}
+	}
+
+	private void showInfo(String header, String content) {
+		Alert a = new Alert(Alert.AlertType.INFORMATION);
+		a.setHeaderText(header);
+		a.setContentText(content);
+		a.showAndWait();
+	}
+
 	private void showAlert(Alert.AlertType type, String header, String content) {
 		Alert alert = new Alert(type);
 		alert.setHeaderText(header);
 		alert.setContentText(content);
 		alert.showAndWait();
 	}
+
 }

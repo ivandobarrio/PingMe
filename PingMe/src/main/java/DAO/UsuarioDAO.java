@@ -40,6 +40,7 @@ public class UsuarioDAO {
 			return query.uniqueResult();
 		}
 	}
+
 	// OBTENER USUARIO POR NOMBRE
 	public Usuario obtenerPorNombre(String nombre) {
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -74,5 +75,4 @@ public class UsuarioDAO {
 			e.printStackTrace();
 		}
 	}
-
 }
