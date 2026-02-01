@@ -21,6 +21,7 @@ public class ClientHandler implements Runnable {
 	private ObjectOutputStream output;
 	private final UsuarioService usuarioService = new UsuarioService();
 	private final MensajeService mensajeService = new MensajeService();
+	private final SalaService salaService = new SalaService();
 	private String username;
 
 	public ClientHandler(Socket cliente) {
@@ -83,6 +84,59 @@ public class ClientHandler implements Runnable {
 					break;
 
 				}
+
+				case CREAR_SALA: {
+					ConversacionDTO dto = (ConversacionDTO) req.getContenido();
+					String creador = dto.a;
+					String nombreSala = dto.b;
+
+					if (nombreSala == null || nombreSala.isBlank()) {
+						sendSync(new ServerRespuesta(2, "ERROR_CREAR_SALA", "Nombre de sala vacío"));
+						break;
+					}
+
+					var existente = salaService.obtenerPorNombre(nombreSala);
+					if (existente != null) {
+						sendSync(new ServerRespuesta(2, "ERROR_CREAR_SALA", "La sala ya existe"));
+						break;
+					}
+
+					var sala = salaService.crearSala(nombreSala);
+
+					var usuario = usuarioService.obtenerPorEmail(creador);
+					if (usuario == null) {
+						sendSync(new ServerRespuesta(2, "ERROR_CREAR_SALA", "Usuario no encontrado"));
+						break;
+					}
+					salaService.agregarUsuario(sala.getId(), usuario);
+
+					sendSync(new ServerRespuesta(0, "SALA_CREADA", nombreSala));
+					break;
+				}
+
+				case UNIRSE_SALA: {
+					ConversacionDTO dto = (ConversacionDTO) req.getContenido();
+					String usuarioNombre = dto.a;
+					String nombreSala = dto.b;
+
+					var sala = salaService.obtenerPorNombre(nombreSala);
+					if (sala == null) {
+						sendSync(new ServerRespuesta(2, "ERROR_UNIRSE_SALA", "La sala no existe"));
+						break;
+					}
+
+					var usuario = usuarioService.obtenerPorEmail(usuarioNombre);
+					if (usuario == null) {
+						sendSync(new ServerRespuesta(2, "ERROR_UNIRSE_SALA", "Usuario no encontrado"));
+						break;
+					}
+
+					salaService.agregarUsuario(sala.getId(), usuario);
+
+					sendSync(new ServerRespuesta(0, "UNIDO_A_SALA", nombreSala));
+					break;
+				}
+
 				case FIN: {
 					sendSync(new ServerRespuesta(0, "FIN", null));
 					close();

@@ -28,7 +28,7 @@ public class SalaService {
 	}
 
 	public void agregarUsuario(Long salaId, Usuario u) {
-		salaDAO.agregarUsuarioASala(salaId, u);
+		salaDAO.agregarUsuarioASala(salaId, u.getId());
 	}
 
 	public void eliminarUsuario(Long salaId, Usuario u) {

@@ -68,13 +68,6 @@ public class PantallaInicio {
 		String salaGral = "Sala General [Público]";
 		salasList.setItems(FXCollections.observableArrayList(salaGral));
 		registrarHistoria(salaGral, "Sistema", "Sala abierta para todos los usuarios.");
-
-		salasList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-			if (newVal != null) {
-				chatsList.getSelectionModel().clearSelection();
-				abrirConversacion(newVal, "Sala");
-			}
-		});
 	}
 
 	// ==========================================
@@ -258,12 +251,69 @@ public class PantallaInicio {
 
 	@FXML
 	private void onCrearSala(ActionEvent event) {
-		// ... (Tu lógica existente de crear sala)
+		TextInputDialog dlg = new TextInputDialog();
+		dlg.setTitle("Crear sala");
+		dlg.setHeaderText("Nueva sala");
+		dlg.setContentText("Nombre de la sala:");
+		dlg.getEditor().setPromptText("por ej. Soporte, GeneralES, Ventas…");
+
+		dlg.showAndWait().ifPresent(nombre -> {
+			String nombreTrim = nombre.trim();
+			if (nombreTrim.isEmpty()) {
+				mostrarError("El nombre de la sala no puede estar vacío.");
+				return;
+			}
+			if (salasList.getItems().contains(nombreTrim)) {
+				mostrarError("Ya existe una sala con ese nombre.");
+				return;
+			}
+			if (chat == null) {
+				mostrarError("Sin conexión al servidor (chat).");
+				return;
+			}
+
+			try {
+				ConversacionDTO dto = new ConversacionDTO("sala", usuarioLabel.getText(), nombreTrim);
+				ServerPeticion pet = new ServerPeticion(TipoComando.CREAR_SALA, dto);
+				chat.send(pet);
+				estadoLabel.setText("Creando sala…");
+
+			} catch (Exception ex) {
+				mostrarError("No se pudo enviar la petición para crear la sala.");
+			}
+
+		});
 	}
 
 	@FXML
 	private void onUnirseSala(ActionEvent event) {
-		// ... (Tu lógica existente de unirse sala)
+		TextInputDialog dlg = new TextInputDialog();
+		dlg.setTitle("Unirse a sala");
+		dlg.setHeaderText("Unirse a una sala existente");
+		dlg.setContentText("Nombre de la sala:");
+		dlg.getEditor().setPromptText("Escribe exactamente el nombre...");
+
+		dlg.showAndWait().ifPresent(nombre -> {
+			String nombreTrim = nombre.trim();
+			if (nombreTrim.isEmpty()) {
+				mostrarError("El nombre de la sala no puede estar vacío.");
+				return;
+			}
+			if (chat == null) {
+				mostrarError("Sin conexión al servidor (chat).");
+				return;
+			}
+
+			try {
+				ConversacionDTO dto = new ConversacionDTO("sala", usuarioLabel.getText(), nombreTrim);
+				ServerPeticion pet = new ServerPeticion(TipoComando.UNIRSE_SALA, dto);
+				chat.send(pet);
+				estadoLabel.setText("Uniéndose a la sala…");
+			} catch (Exception ex) {
+				mostrarError("No se pudo enviar la petición para unirse a la sala.");
+			}
+
+		});
 	}
 
 	private void abrirConversacion(String nombre, String tipo) {
@@ -395,7 +445,62 @@ public class PantallaInicio {
 			break;
 
 		}
+		case "SALA_CREADA": {
+			String nombreSala = extraerNombreSala(resp.getContenido());
+			if (nombreSala == null) {
+				mostrarError("Respuesta de servidor inválida para SALA_CREADA.");
+				break;
+			}
+			if (!salasList.getItems().contains(nombreSala)) {
+				salasList.getItems().add(nombreSala);
+			}
+			registrarHistoria(nombreSala, usuarioLabel.getText(), "Sala creada (servidor).");
+			abrirSala(nombreSala);
+			estadoLabel.setText("Sala creada: " + nombreSala);
+			break;
 		}
+		case "UNIDO_A_SALA": {
+			String nombreSala = extraerNombreSala(resp.getContenido());
+			if (nombreSala == null) {
+				mostrarError("Respuesta de servidor inválida para UNIDO_A_SALA.");
+				break;
+			}
+			if (!salasList.getItems().contains(nombreSala)) {
+				salasList.getItems().add(nombreSala);
+			}
+			abrirSala(nombreSala);
+			estadoLabel.setText("Unido a sala: " + nombreSala);
+			break;
+
+		}
+		case "ERROR_UNIRSE_SALA": {
+			String msg = (String) resp.getContenido();
+			mostrarError(msg != null ? msg : "No se pudo unir a la sala.");
+			break;
+		}
+		case "CMD_NOT_SUPPORTED": {
+			mostrarError("Comando no soportado por el servidor.");
+			break;
+		}
+		case "ERROR_CREAR_SALA": {
+			String msg = resp.getContenido() != null ? resp.getContenido().toString() : "No se pudo crear la sala.";
+			mostrarError(msg);
+			break;
+		}
+
+		}
+	}
+
+	private String extraerNombreSala(Object contenido) {
+		if (contenido == null)
+			return null;
+		if (contenido instanceof String)
+			return (String) contenido;
+		if (contenido instanceof entidades.Sala)
+			return ((entidades.Sala) contenido).getNombre();
+		if (contenido instanceof entidades.ConversacionDTO)
+			return ((entidades.ConversacionDTO) contenido).b;
+		return contenido.toString();
 	}
 
 	private boolean esSalaNombre(String nombre) {

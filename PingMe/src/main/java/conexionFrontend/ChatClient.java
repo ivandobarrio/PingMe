@@ -58,13 +58,22 @@ public class ChatClient implements AutoCloseable {
 				Object obj = in.readObject();
 				if (obj instanceof ServerRespuesta resp) {
 					if (onEvent != null) {
-						// Asegura UI-safe
-						Platform.runLater(() -> onEvent.accept(resp));
+						Platform.runLater(() -> {
+							try {
+								onEvent.accept(resp);
+							} catch (Exception ex) {
+								ex.printStackTrace(); 
+							}
+						});
 					}
+				} else {
+					System.out.println("[CLIENT] Objeto desconocido: " + obj);
 				}
 			}
-		} catch (Exception ignored) {
+		} catch (Exception e) {
+			e.printStackTrace(); 
 		}
+
 	}
 
 	public synchronized void send(ServerPeticion peticion) throws Exception {
