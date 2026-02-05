@@ -232,7 +232,7 @@ Uso de callbacks por la interfaz MensajeCallback para desacoplar la lógica de r
 1. En la pantalla de login, haz clic en *"¿Olvidaste tu contraseña?"*
 2. Introduce tu nombre de usuario
 3. Responde a la pregunta de seguridad que configuraste durante el registro
-4. Si la respuesta es correcta, se te mostrará tu contraseña
+4. Si la respuesta es correcta, se te enviara un correo con tu contraseña
 
 ## Licencia
 
@@ -240,14 +240,9 @@ Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más 
 
 ## Autores
 
-Proyecto desarrollado como práctica de Programación de Servicios y Procesos.
+Jose Javier Carballo
+Janire Martínez
+Ivan Dobarrio
+Alejandro Onaindia
+Conrado Ayuso
 
-## Contribución
-
-Las contribuciones son bienvenidas. Para contribuir:
-
-1. Haz un fork del repositorio
-2. Crea una rama para tu funcionalidad (git checkout -b feature/nueva-funcionalidad)
-3. Realiza tus cambios y haz commit (git commit -m 'Añadir nueva funcionalidad')
-4. Sube los cambios a tu rama (git push origin feature/nueva-funcionalidad)
-5. Abre un Pull Request
