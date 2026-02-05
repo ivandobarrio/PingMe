@@ -240,9 +240,10 @@ Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más 
 
 ## Autores
 
-Jose Javier Carballo
-Janire Martínez
-Ivan Dobarrio
-Alejandro Onaindia
-Conrado Ayuso
+- Jose Javier Carballo
+- Janire Martínez
+- Ivan Dobarrio
+- Alejandro Onaindia
+- Conrado Ayuso
+ 
 
