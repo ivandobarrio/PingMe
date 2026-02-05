@@ -10,7 +10,8 @@ import org.hibernate.query.Query;
 import java.util.List;
 
 public class MensajeDAO {
-    
+	
+	// Guarda un mensaje en la base de datos
     public void guardar(Mensaje mensaje) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -25,6 +26,7 @@ public class MensajeDAO {
         }
     }
     
+    // Obtiene los mensajes de una sala específica, ordenados por fecha
     public List<Mensaje> obtenerMensajesDeSala(String codigoSala) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Mensaje> query = session.createQuery(
@@ -37,6 +39,7 @@ public class MensajeDAO {
         }
     }
     
+    // Obtiene los mensajes privados entre dos usuarios, ordenados por fecha
     public List<Mensaje> obtenerMensajesPrivados(String usuario1, String usuario2) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Mensaje> query = session.createQuery(

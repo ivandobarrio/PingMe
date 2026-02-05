@@ -22,6 +22,7 @@ public class TcpConexionBasicaClient {
         this.conectado = false;
     }
     
+//     Método para conectar al servidor
     public boolean conectar() {
         try {
             socket = new Socket(HOST, PUERTO);
@@ -32,7 +33,7 @@ public class TcpConexionBasicaClient {
             System.out.println("Conectado al servidor en " + HOST + ":" + PUERTO);
             
             
-            iniciarHiloEscucha();
+            iniciarHiloEscucha(); 
             
             return true;
         } catch (IOException e) {
@@ -41,6 +42,7 @@ public class TcpConexionBasicaClient {
         }
     }
     
+//     Método para enviar una línea de texto al servidor
     public void enviarLinea(String linea) {
         if (salida != null && conectado) {
             salida.println(linea);
@@ -48,6 +50,7 @@ public class TcpConexionBasicaClient {
         }
     }
     
+//     Método para recibir una línea de texto del servidor
     public String recibirLinea() throws IOException {
         if (entrada != null && conectado) {
             return entrada.readLine();
@@ -55,10 +58,19 @@ public class TcpConexionBasicaClient {
         return null;
     }
     
+//     Método para establecer el callback de mensajes recibidos
+//     Este callback se llamará cada vez que se reciba un mensaje del servidor
+//     El mensaje se pasará como argumento al método onMensajeRecibido del callback 
+//     El callback se ejecutará en el hilo de la interfaz gráfica para evitar problemas de concurrencia
     public void setCallback(MensajeCallback callback) {
         this.callback = callback;
     }
     
+
+//     Método para iniciar el hilo de escucha de mensajes del servidor
+//     Este hilo se ejecutará en segundo plano y estará constantemente leyendo mensajes del servidor
+//     Cada vez que se reciba un mensaje, se imprimirá en la consola y se llamará al callback para actualizar la interfaz gráfica
+
     private void iniciarHiloEscucha() {
         hiloEscucha = new Thread(new Runnable() {
             @Override
@@ -90,6 +102,8 @@ public class TcpConexionBasicaClient {
         hiloEscucha.start();
     }
     
+    // Método para recibir una cantidad específica de bytes del servidor
+    // Este método se usa para recibir archivos o datos binarios del servidor
     public byte[] recibirBytes(int cantidad) throws IOException {
         InputStream in = socket.getInputStream();
         byte[] buffer = new byte[cantidad];
@@ -104,6 +118,7 @@ public class TcpConexionBasicaClient {
         return buffer;
     }
     
+    // Método para desconectar del servidor
     public void desconectar() {
         try {
             conectado = false;
@@ -118,6 +133,7 @@ public class TcpConexionBasicaClient {
         }
     }
     
+    // Método para verificar si la conexión al servidor está activa
     public boolean isConectado() {
         return conectado && socket != null && !socket.isClosed();
     }

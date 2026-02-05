@@ -30,11 +30,11 @@ public class PantallaInicio implements MensajeCallback {
     public void initialize() {
         conexion = App.getConexion();
         usuarioLabel.setText(App.getUsuarioActual());
-        
-        
+          
+        // Establecer el callback para recibir mensajes del servidor
         conexion.setCallback(this);
         
-        
+        // Listeners para detectar cambios de selección en las listas de salas y chats
         salasList.getSelectionModel().selectedItemProperty().addListener((obs, old, nuevo) -> {
             if (nuevo != null) {
                 chatsList.getSelectionModel().clearSelection();
@@ -42,6 +42,7 @@ public class PantallaInicio implements MensajeCallback {
             }
         });
         
+        // Listener para detectar selección de usuario en la lista de chats privados
         chatsList.getSelectionModel().selectedItemProperty().addListener((obs, old, nuevo) -> {
             if (nuevo != null) {
                 salasList.getSelectionModel().clearSelection();
@@ -53,9 +54,12 @@ public class PantallaInicio implements MensajeCallback {
         onRefrescarUsuarios();
     }
     
+    // Método del callback para recibir mensajes del servidor
+    // Procesa los mensajes recibidos y actualiza la interfaz de usuario en consecuencia
+    // El mensaje se divide en partes usando el delimitador "|" para identificar el tipo de mensaje y su contenido
     @Override
     public void onMensajeRecibido(String mensaje) {
-        String[] partes = mensaje.split("\\|", -1);
+        String[] partes = mensaje.split("\\|", -1); // El -1 asegura que se conserven los campos vacíos al dividir
         String comando = partes[0];
         
         
@@ -135,6 +139,7 @@ public class PantallaInicio implements MensajeCallback {
         dialog.setHeaderText("Nueva Sala de Chat");
         dialog.setContentText("Nombre de la sala:");
         
+        // Mostrar el diálogo y esperar la respuesta del usuario
         Optional<String> resultado = dialog.showAndWait();
         resultado.ifPresent(nombre -> {
             if (!nombre.trim().isEmpty()) {
@@ -150,6 +155,7 @@ public class PantallaInicio implements MensajeCallback {
         dialog.setHeaderText("Unirse a Sala Existente");
         dialog.setContentText("Código de la sala:");
         
+        // Mostrar el diálogo y esperar la respuesta del usuario
         Optional<String> resultado = dialog.showAndWait();
         resultado.ifPresent(codigo -> {
             if (!codigo.trim().isEmpty()) {
@@ -158,11 +164,13 @@ public class PantallaInicio implements MensajeCallback {
         });
     }
     
+    // Método para refrescar la lista de usuarios conectados
     @FXML
     private void onRefrescarUsuarios() {
         conexion.enviarLinea("LIST_USERS");
     }
     
+    // Método para enviar un mensaje al chat actual (sala o privado)
     @FXML
     private void onEnviar() {
         String texto = mensajeField.getText().trim();
@@ -184,11 +192,13 @@ public class PantallaInicio implements MensajeCallback {
         mensajeField.clear();
     }
     
+    // Método para manejar la función de adjuntar archivos (no implementada)
     @FXML
     private void onAdjuntar() {
         estadoLabel.setText("Función de adjuntar archivos no implementada");
     }
     
+    // Método para mostrar el historial de mensajes de la sala actual
     @FXML
     private void onHistoriaSala() {
         if (conversacionActual != null && tipoConversacion.equals("SALA")) {
@@ -196,6 +206,7 @@ public class PantallaInicio implements MensajeCallback {
         }
     }
     
+    // Método para mostrar el historial de mensajes del chat privado actual
     @FXML
     private void onInfoChat() {
         if (conversacionActual != null) {
@@ -203,12 +214,16 @@ public class PantallaInicio implements MensajeCallback {
         }
     }
     
+    // Método para generar un informe en PDF de los usuarios conectados
     @FXML
     private void onGenerarInforme() {
         conexion.enviarLinea("REPORT_USERS");
         estadoLabel.setText("Generando informe...");
     }
 
+    // Método para recibir el PDF generado por el servidor y guardarlo en el disco
+    // Este método se ejecuta en un hilo separado para no bloquear la interfaz gráfica mientras se recibe el archivo
+    // El tamaño del PDF se recibe como argumento para saber cuántos bytes leer del servidor
     private void recibirPDF(int tamaño) {
         new Thread(() -> {
             try {
@@ -237,6 +252,7 @@ public class PantallaInicio implements MensajeCallback {
         App.cambiarEscena("Login.fxml", 720, 460);
     }
     
+    // Método para seleccionar una sala de chat y mostrar su historial de mensajes
     private void seleccionarSala(String item) {
         String codigo = item.split(" - ")[0];
         conversacionActual = codigo;
@@ -246,6 +262,7 @@ public class PantallaInicio implements MensajeCallback {
         conexion.enviarLinea("HISTORIA_SALA|" + codigo);
     }
     
+    // Método para seleccionar un usuario de chat privado y mostrar su historial de mensajes
     private void seleccionarUsuario(String usuario) {
         conversacionActual = usuario;
         tipoConversacion = "PRIVADO";
@@ -254,6 +271,7 @@ public class PantallaInicio implements MensajeCallback {
         conexion.enviarLinea("HISTORIA_PRIVADA|" + usuario);
     }
     
+    // Método para agregar un mensaje a la interfaz de usuario
     private void agregarMensaje(String emisor, String contenido, boolean esHistorial) {
         Label lblEmisor = new Label(emisor + ":");
         lblEmisor.setStyle("-fx-font-weight: bold;");
@@ -268,6 +286,7 @@ public class PantallaInicio implements MensajeCallback {
         mensajesBox.getChildren().add(msgBox);
     }
     
+    // Método para mostrar una alerta con un título y mensaje específico
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);

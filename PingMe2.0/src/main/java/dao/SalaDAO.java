@@ -11,6 +11,7 @@ import java.util.List;
 
 public class SalaDAO {
     
+	// Guarda una sala en la base de datos
     public void guardar(Sala sala) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -25,6 +26,7 @@ public class SalaDAO {
         }
     }
     
+    // Actualiza una sala existente en la base de datos
     public Sala buscarPorCodigo(String codigo) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Sala> query = session.createQuery("FROM Sala WHERE codigoUnico = :codigo", Sala.class);
@@ -36,6 +38,7 @@ public class SalaDAO {
         }
     }
     
+    // Elimina una sala de la base de datos
     public List<Sala> listarTodas() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery("FROM Sala", Sala.class).list();

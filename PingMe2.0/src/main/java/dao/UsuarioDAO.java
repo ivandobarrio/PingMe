@@ -11,6 +11,7 @@ import java.util.List;
 
 public class UsuarioDAO {
     
+	// Guarda un nuevo usuario en la base de datos
     public void guardar(Usuario usuario) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -29,6 +30,7 @@ public class UsuarioDAO {
         }
     }
 
+    // Actualiza un usuario existente en la base de datos
     public void actualizar(Usuario usuario) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -41,6 +43,7 @@ public class UsuarioDAO {
         }
     }
     
+    // Elimina un usuario de la base de datos
     public Usuario buscarPorUsername(String username) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Usuario> query = session.createQuery("FROM Usuario WHERE username = :username", Usuario.class);
@@ -52,6 +55,7 @@ public class UsuarioDAO {
         }
     }
     
+    // Busca un usuario por su email en la base de datos
     public Usuario buscarPorEmail(String email) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Usuario> query = session.createQuery("FROM Usuario WHERE email = :email", Usuario.class);
@@ -63,6 +67,7 @@ public class UsuarioDAO {
         }
     }
     
+    // Lista todos los usuarios registrados en la base de datos
     public List<Usuario> listarTodos() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery("FROM Usuario", Usuario.class).list();
@@ -72,11 +77,13 @@ public class UsuarioDAO {
         }
     }
     
+    // Valida las credenciales de un usuario comparando el username y password con los almacenados en la base de datos
     public boolean validarCredenciales(String username, String password) {
         Usuario usuario = buscarPorUsername(username);
         return usuario != null && usuario.getPassword().equals(password);
     }
     
+    // Valida la respuesta de seguridad de un usuario comparando la respuesta proporcionada con la almacenada en la base de datos
     public boolean validarRespuestaSeguridad(Usuario u, String respuesta) {
         if (u == null || u.getRespuestaSeguridad() == null)
             return false;

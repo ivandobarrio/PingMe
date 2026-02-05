@@ -32,6 +32,7 @@ public class RegistroController implements MensajeCallback {
         );
     }
     
+    // Método para manejar el evento de registro
     @FXML
     private void onRegistrar() {
         String email = emailField.getText().trim();
@@ -47,10 +48,9 @@ public class RegistroController implements MensajeCallback {
             return;
         }
         
-        
         conexion.setCallback(this);
         
-        
+        // Construir el comando de registro con todos los campos, usando "|" como separador
         StringBuilder comando = new StringBuilder("REGISTER|");
         comando.append(usuario).append("|");
         comando.append(email).append("|");
@@ -60,14 +60,16 @@ public class RegistroController implements MensajeCallback {
         comando.append(pregunta != null ? pregunta : "").append("|");
         comando.append(respuesta);
         
-        
+        // Enviar el comando al servidor
         conexion.enviarLinea(comando.toString());
     }
 
+    // Método del callback para recibir mensajes del servidor
     @Override
     public void onMensajeRecibido(String mensaje) {
         String[] partes = mensaje.split("\\|", -1);
         
+        // Procesar la respuesta del servidor después de intentar registrar un nuevo usuario
         if (partes[0].equals("REGISTER_OK")) {
             mostrarAlerta("Éxito", "Usuario registrado correctamente");
             App.cambiarEscena("Login.fxml", 720, 460);
@@ -77,6 +79,7 @@ public class RegistroController implements MensajeCallback {
         }
     }
     
+    // Método para mostrar una alerta con un título y mensaje específico
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);

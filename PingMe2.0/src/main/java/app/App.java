@@ -13,6 +13,7 @@ public class App extends Application {
     private static TcpConexionBasicaClient conexion;
     private static String usuarioActual;
     
+    // Método de inicio de la aplicación
     @Override
     public void start(Stage primaryStage) throws Exception {
     	
@@ -42,6 +43,7 @@ public class App extends Application {
         });
     }
     
+    // Método para cambiar de escena
     public static void cambiarEscena(String fxmlFile, int width, int height) {
         try {
             Parent root = FXMLLoader.load(App.class.getResource("/" + fxmlFile));
@@ -53,18 +55,22 @@ public class App extends Application {
         }
     }
     
+    // Método para obtener la conexión TCP
     public static TcpConexionBasicaClient getConexion() {
         return conexion;
     }
     
+    // Métodos para manejar el usuario actual
     public static String getUsuarioActual() {
         return usuarioActual;
     }
     
+    // Método para establecer el usuario actual
     public static void setUsuarioActual(String usuario) {
         usuarioActual = usuario;
     }
     
+    // Método principal para lanzar la aplicación
     public static void main(String[] args) {
         launch(args);
     }

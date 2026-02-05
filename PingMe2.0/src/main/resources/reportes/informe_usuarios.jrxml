@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- JasperReports 6.x -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+                                  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="informe_usuarios"
+              pageWidth="595" pageHeight="842" columnWidth="515"
+              leftMargin="40" rightMargin="40" topMargin="50" bottomMargin="50"
+              uuid="e2f0f2f2-aaaa-bbbb-cccc-1234567890ab">
+
+    <!-- Parámetros -->
+    <parameter name="TITULO_INFORME" class="java.lang.String"/>
+
+    <!-- Campos (coinciden con los getters del bean Usuario) -->
+    <field name="username" class="java.lang.String"/>
+    <field name="email" class="java.lang.String"/>
+    <field name="edad" class="java.lang.Integer"/>
+    <field name="sexo" class="java.lang.String"/>
+
+    <!-- Estilos rápidos -->
+    <style name="Title" fontName="SansSerif" fontSize="16" isBold="true"/>
+    <style name="Th" fontName="SansSerif" fontSize="11" isBold="true"/>
+    <style name="Td" fontName="SansSerif" fontSize="10"/>
+
+    <!-- Encabezado: título -->
+    <title>
+        <band height="40">
+            <textField>
+                <reportElement x="0" y="0" width="515" height="20" style="Title"/>
+                <textFieldExpression><![CDATA[$P{TITULO_INFORME}]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+
+    <!-- Encabezados de columnas -->
+    <columnHeader>
+        <band height="20">
+            <staticText>
+                <reportElement x="0" y="0" width="140" height="20" style="Th"/>
+                <text><![CDATA[Usuario]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="140" y="0" width="200" height="20" style="Th"/>
+                <text><![CDATA[Email]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="340" y="0" width="60" height="20" style="Th"/>
+                <text><![CDATA[Edad]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="400" y="0" width="115" height="20" style="Th"/>
+                <text><![CDATA[Sexo]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <!-- Cuerpo: filas por cada Usuario -->
+    <detail>
+        <band height="18">
+            <textField>
+                <reportElement x="0" y="0" width="140" height="18" style="Td"/>
+                <textFieldExpression><![CDATA[$F{username}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="140" y="0" width="200" height="18" style="Td"/>
+                <textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+            </textField>
+            <textField pattern="###0">
+                <reportElement x="340" y="0" width="60" height="18" style="Td"/>
+                <textFieldExpression><![CDATA[$F{edad}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="400" y="0" width="115" height="18" style="Td"/>
+                <textFieldExpression><![CDATA[$F{sexo}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <!-- Pie de página con numeración -->
+    <pageFooter>
+        <band height="18">
+            <textField>
+                <reportElement x="0" y="0" width="515" height="18" style="Td"/>
+                <textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+
+</jasperReport>

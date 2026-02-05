@@ -18,10 +18,14 @@ public class LoginController implements MensajeCallback {
     
     @FXML
     public void initialize() {
+    	// Obtener la conexión TCP desde la clase App
         conexion = App.getConexion();
         
     }
     
+    // Método para manejar el evento de login
+    // Valida los campos y envía la solicitud de login al servidor
+    // Luego, espera la respuesta del servidor para determinar si el login fue exitoso o no
     @FXML
     private void onLogin() {
         String usuario = usuarioField.getText().trim();
@@ -30,15 +34,15 @@ public class LoginController implements MensajeCallback {
         if (usuario.isEmpty() || password.isEmpty()) {
             mostrarAlerta("Error", "Por favor completa todos los campos");
             return;
-        }
+        }   
         
-        
-        conexion.setCallback(this);
-        
+        conexion.setCallback(this); 
         
         conexion.enviarLinea("LOGIN|" + usuario + "|" + password);
     }
 
+    // Método del callback para recibir mensajes del servidor
+    // Procesa la respuesta del servidor después de intentar iniciar sesión
     @Override
     public void onMensajeRecibido(String mensaje) {
         String[] partes = mensaje.split("\\|", -1);
@@ -52,16 +56,19 @@ public class LoginController implements MensajeCallback {
         }
     }
     
+    // Método para manejar el evento de registro
     @FXML
     private void onRegister() {
         App.cambiarEscena("Registro.fxml", 720, 500);
     }
     
+    // Método para manejar el evento de recuperación de contraseña
     @FXML
     private void onForgot() {
         App.cambiarEscena("RecuperarContraseña.fxml", 780, 340);
     }
     
+    // Método para mostrar una alerta con un título y mensaje específico
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);
