@@ -235,7 +235,6 @@ public class PantallaInicio implements MensajeCallback {
     
     @FXML
     private void onLogout() {
-        conexion.enviarLinea("LOGOUT");
         App.cambiarEscena("Login.fxml", 720, 460);
     }
     
