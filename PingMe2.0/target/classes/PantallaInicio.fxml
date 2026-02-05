@@ -20,7 +20,6 @@
  <Region HBox.hgrow="ALWAYS"/>
  
  <Button text="Informe Usuarios" onAction="#onGenerarInforme" styleClass="primary-btn secondary-btn"/>
- <Button text="Tickets" onAction="#onTickets" styleClass="primary-btn secondary-btn"/>
  <Button fx:id="logoutBtn" text="Cerrar sesión" onAction="#onLogout" styleClass="primary-btn"/>
  </HBox>
  </top>
