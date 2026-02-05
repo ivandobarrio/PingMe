@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="500.0" prefWidth="720" styleClass="anchor-pane" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.RegistroController">
+
+ <children>
+ <BorderPane styleClass="root-panel" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+
+ <center>
+ <VBox alignment="TOP_CENTER" prefHeight="543.0" prefWidth="720.0" spacing="18">
+ <padding>
+ <Insets bottom="24" left="24" right="24" top="24" />
+ </padding>
+
+ <!-- Encabezado -->
+ <HBox alignment="CENTER" spacing="16">
+ <Label styleClass="title" text="Registro">
+ <font>
+ <Font name="System Bold" size="18.0" />
+ </font></Label>
+ <Region HBox.hgrow="ALWAYS" />
+ <Label styleClass="brand" text="PingMe">
+ <font>
+ <Font name="System Bold" size="18.0" />
+ </font></Label>
+ </HBox>
+
+ <!-- Formulario -->
+ <GridPane hgap="14" maxWidth="646.0" prefHeight="474.0" prefWidth="646.0" vgap="14">
+ <columnConstraints>
+ <ColumnConstraints halignment="LEFT" minWidth="140.0" prefWidth="160.0" />
+ <ColumnConstraints hgrow="ALWAYS" maxWidth="400.0000366210937" minWidth="210.39996337890622" prefWidth="210.39996337890622" />
+ <ColumnConstraints hgrow="ALWAYS" maxWidth="250.00003662109373" minWidth="10.0" prefWidth="250.00003662109373" />
+ <ColumnConstraints hgrow="ALWAYS" maxWidth="250.00003662109373" minWidth="10.0" prefWidth="250.00003662109373" />
+ </columnConstraints>
+
+ <!-- Email -->
+ <Label styleClass="field-label" text="Email" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+ <TextField fx:id="emailField" promptText="tu@email.com" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="0" />
+
+ <!-- Nombre de usuario -->
+ <Label styleClass="field-label" text="Nombre de usuario" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+ <TextField fx:id="usuarioField" promptText="usuario123" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+
+ <!-- Contraseña -->
+ <Label styleClass="field-label" text="Contraseña" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+ <PasswordField fx:id="passwordField" promptText="••••••••" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
+
+ <!-- Edad -->
+ <Label styleClass="field-label" text="Edad" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+ <TextField fx:id="edadField" prefHeight="21.0" prefWidth="466.0" promptText="Ej: 25" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+ <!-- Sexo -->
+ <Label styleClass="field-label" text="Sexo" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+ <ComboBox fx:id="sexoCombo" GridPane.columnIndex="3" GridPane.rowIndex="3">
+ <items>
+ <FXCollections fx:factory="observableArrayList">
+ <String fx:value="Femenino" />
+ <String fx:value="Masculino" />
+ <String fx:value="Otro" />
+ <String fx:value="Prefiero no decirlo" />
+ </FXCollections>
+ </items>
+ </ComboBox>
+ <Label styleClass="field-label" text="Pregunta seguridad" GridPane.rowIndex="5" />
+ <ComboBox fx:id="pregunta1Combo" prefHeight="42.0" prefWidth="438.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="5">
+ <GridPane.margin>
+ <Insets bottom="10.0" top="10.0" />
+ </GridPane.margin></ComboBox>
+ <TextField fx:id="respuesta1Field" prefHeight="42.0" prefWidth="427.0" promptText="respuesta" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="6" />
+ <rowConstraints>
+ <RowConstraints />
+ <RowConstraints />
+ <RowConstraints />
+ <RowConstraints />
+ <RowConstraints />
+ <RowConstraints minHeight="10.0" prefHeight="40.0" />
+ <RowConstraints minHeight="10.0" prefHeight="40.0" />
+ </rowConstraints>
+ </GridPane>
+
+ <!-- Botón Registrar -->
+ <HBox alignment="CENTER">
+ <Button fx:id="registrarBtn" onAction="#onRegistrar" text="Registrar" />
+ </HBox>
+
+ </VBox>
+ </center>
+ </BorderPane>
+ </children>
+</AnchorPane>
