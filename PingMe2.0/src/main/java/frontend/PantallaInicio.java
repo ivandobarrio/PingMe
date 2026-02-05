@@ -3,9 +3,7 @@ package frontend;
 import conexionFrontend.MensajeCallback;
 import conexionFrontend.TcpConexionBasicaClient;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.io.FileOutputStream;
@@ -233,6 +231,7 @@ public class PantallaInicio implements MensajeCallback {
         }).start();
     }
     
+    // Método para manejar el cierre de la aplicación
     @FXML
     private void onLogout() {
         App.cambiarEscena("Login.fxml", 720, 460);
