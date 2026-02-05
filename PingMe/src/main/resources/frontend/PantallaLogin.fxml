@@ -13,8 +13,9 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="460" prefWidth="720" stylesheets="@registro.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.LoginController">
+<AnchorPane prefHeight="460" prefWidth="720" styleClass="anchor-pane" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.LoginController">
 
     <children>
         <BorderPane styleClass="root-panel" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
@@ -26,7 +27,10 @@
                     </padding>
 
                     <HBox alignment="CENTER">
-                        <Label styleClass="brand" text="PingMe" />
+                        <Label styleClass="title-label" stylesheets="@styles.css" text="PingMe">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font></Label>
                     </HBox>
 
                     <GridPane hgap="14" maxWidth="640" vgap="18">
@@ -36,7 +40,7 @@
                         </columnConstraints>
 
                         <Label styleClass="field-label" text="Usuario" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                        <TextField fx:id="usuarioField" promptText="usuario123" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                        <TextField fx:id="usuarioField" prefHeight="26.0" prefWidth="354.0" promptText="usuario123" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
                         <Label styleClass="field-label" text="Contraseña" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                         <PasswordField fx:id="passwordField" promptText="••••••••" GridPane.columnIndex="1" GridPane.rowIndex="1" />

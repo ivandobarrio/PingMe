@@ -32,19 +32,27 @@ public class Usuario implements Serializable {
 
     @Column(name = "edad", nullable = false)
     private int edad;
+    
+    @Column(name = "pregunta", nullable = false, length = 255)
+    private String pregunta;
+    
+    @Column(name = "respuesta", nullable = false, length = 255)
+    private String respuesta;
 
     // ===== Constructores =====
     protected Usuario() {
         // Requerido por JPA
     }
 
-    public Usuario(Long id, String nombre, String contraseña, String email, String sexo, int edad) {
+    public Usuario(Long id, String nombre, String contraseña, String email, String sexo, int edad, String pregunta, String respuesta) {
         this.id = id;
         this.nombre = nombre;
         this.contraseña = contraseña;
         this.email = email;
         this.sexo = sexo;
         this.edad = edad;
+        this.pregunta = pregunta;
+        this.respuesta = respuesta;
     }
 
     public Usuario(String nombre) {
@@ -72,13 +80,20 @@ public class Usuario implements Serializable {
 
     public int getEdad() { return edad; }
     public void setEdad(int edad) { this.edad = edad; }
+    
+    public String getPregunta() { return pregunta; }
+	public void setPregunta(String pregunta) { this.pregunta = pregunta; }
+
+	public String getRespuesta() { return respuesta; }
+	public void setRespuesta(String respuesta) { this.respuesta = respuesta; }
 
     @Override
-    public String toString() {
-        return "Usuario [id=" + id + ", nombre=" + nombre + ", sexo=" + sexo + ", edad=" + edad + "]";
-    }
+	public String toString() {
+		return "Usuario [id=" + id + ", nombre=" + nombre + ", contraseña=" + contraseña + ", email=" + email
+				+ ", sexo=" + sexo + ", edad=" + edad + ", pregunta=" + pregunta + ", respuesta=" + respuesta + "]";
+	}
 
-    // equals/hashCode por id
+	// equals/hashCode por id
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
